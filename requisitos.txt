@@ -1,0 +1,24 @@
+Funcionalidades essenciais do Stokki
+
+Como usuário eu tenho certeza que quero:
+
+- cadastrar novos produtos no sistema
+- visualizar meu estoque atual (o que eu tenho, ou pelo menos deveria ter no estoque)
+- visualizar minhas vendas e extrair estatisticas (o que ta vendendo bem? o que não está?)
+- editar as informações do meu produto (talvez o preço unitário mude)
+- adicionar produtos ao estoque
+- remover produtos do estoque
+- registrar a entrada de um lote
+- alerta quando o estoque estiver baixo
+- alerta quando um estoque for vencer
+- um sistema de interface gráfica para o usuário
+- relatórios
+
+Talvez?
+
+- cadastrar vendas
+- lista de produtos na área de venda
+
+Se der tempo:
+
+- controlar o acesso ao software (talvez um funcionário não deva ter tanto acesso quanto o gerente ou dono)
