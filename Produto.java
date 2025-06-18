@@ -1,27 +1,44 @@
 import java.io.Serializable;
 
-public class Produto implements Serializable
+public abstract class Produto implements Serializable
 {
   // Atributos
   
   private int id; // código para ser utilizado no próprio sistema
   private String codigoDeBarras = ""; // código de barras do produto
   private int quantidadeDisponivel = 0; // quantidade em estoque
-  private String fornecedor = ""; // fornecedor do produto
   private String categoria = ""; // categoria do produto
   private String nomeDoProduto = ""; // nome do produto ex. sabão 
   private int quantidadeVendida = 0; // número de unidades vendidas
   private double precoUnitario; // preço por unidade do produto
   private Grandeza grandeza; // o produto é medido em que grandeza (peso, unidade, volume)
+  private static int contadorProdutos = 0; // contador para gerar IDs únicos
+  private Fornecedor fornecedor; // fornecedor do produto
 
   // Método construtor
-  public Produto(int id, double precoUnitario, Grandeza grandeza)
+  public Produto(String nomeDoProduto, double precoUnitario, Grandeza grandeza, Fornecedor fornecedor)
   {
-    this.id = id;
+    this.id = ++contadorProdutos; // ID é gerado automaticamente
+    this.nomeDoProduto = nomeDoProduto;
     this.precoUnitario = precoUnitario;
     this.grandeza = grandeza;
+    this.fornecedor = fornecedor;
     
   }
+
+  // Método construtor: caso o fornecedor não seja necessário, podemos ter um construtor que não o recebe
+  public Produto(String nomeDoProduto, double precoUnitario, Grandeza grandeza) 
+  {
+    this(nomeDoProduto, precoUnitario, grandeza, null); 
+  }
+
+
+  // Quantidade de produtos cadastrados
+  public static int getTotalProdutosCadastrados() 
+  {
+      return contadorProdutos;
+  }
+
 
   // getters e setters
   public int getId()
@@ -34,9 +51,9 @@ public class Produto implements Serializable
     return this.codigoDeBarras;
   }
 
-  public String getFornecedor()
-  {
-    return this.fornecedor;
+  public Fornecedor getFornecedor() 
+  { 
+    return this.fornecedor; 
   }
 
   public String getCategoria()
@@ -74,7 +91,7 @@ public class Produto implements Serializable
     this.codigoDeBarras = codigoDeBarras;
   }
 
-  public void setFornecedor(String fornecedor)
+  public void setFornecedor(Fornecedor fornecedor)
   {
     this.fornecedor = fornecedor;
   }
@@ -129,4 +146,13 @@ public class Produto implements Serializable
     this.quantidadeDisponivel -= quantidade;
     this.quantidadeVendida += quantidade;
   }
+
+  public abstract String getDetalhes(); // Método abstrato que deve ser implementado pelas subclasses para fornecer detalhes específicos do produto
+
+  @Override
+  public String toString() 
+  {
+      return "ID: " + id + " | Produto: " + nomeDoProduto + " | Qtd: " + quantidadeDisponivel;
+  }
 }
+// 
