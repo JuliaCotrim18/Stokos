@@ -1,6 +1,3 @@
-
-package modelo;
-
 import java.time.LocalDate;
 
 public class ProdutoPerecivel extends Produto 

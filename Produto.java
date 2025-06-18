@@ -1,5 +1,3 @@
-package modelo;
-
 import java.io.Serializable;
 
 public class Produto implements Serializable
