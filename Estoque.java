@@ -85,8 +85,9 @@ public class Estoque {
     }
 
     /**
-     * Lista todos os produtos presentes no estoque, mostrando seus detalhes.
-     */
+    * Lista todos os produtos presentes no estoque, mostrando os seus detalhes,
+    * incluindo informações do fornecedor, caso estejam disponíveis.
+    */
     public void listarProdutos() {
         if (produtos.isEmpty()) {
             System.out.println("O estoque está vazio.");
@@ -95,8 +96,13 @@ public class Estoque {
 
         System.out.println("\n--- RELATÓRIO DE ESTOQUE ATUAL ---");
         for (Produto produto : produtos) {
-            // O método toString() já fornece um bom resumo. Adicionamos detalhes específicos.
-            System.out.println(produto.toString() + " | Detalhes: " + produto.getDetalhes());
+            String infoFornecedor = "";
+            // Verifica se existe um fornecedor associado ao produto
+            if (produto.getFornecedor() != null) {
+                infoFornecedor = " | Fornecedor: " + produto.getFornecedor().getNome();
+            }
+            // Exibe o produto com seus detalhes
+            System.out.println(produto.toString() + " | Detalhes: " + produto.getDetalhes() + infoFornecedor);
         }
         System.out.println("-------------------------------------\n");
     }
