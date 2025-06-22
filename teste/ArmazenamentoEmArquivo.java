@@ -13,7 +13,7 @@ public class ArmazenamentoEmArquivo implements ServicoDeArmazenamento
     // construtor
     public ArmazenamentoEmArquivo(String caminhoDoArquivo)
     {
-        this.CaminhoDoArquivo = caminhoDoArquivo;
+        this.caminhoDoArquivo = caminhoDoArquivo;
 
     }
 
@@ -21,9 +21,14 @@ public class ArmazenamentoEmArquivo implements ServicoDeArmazenamento
     // salva o estoque em um arquivo binário
     public void salvarDados(DadosDoSistema dados) throws Exception
     {
-        try (ObjectOutputStream oos = new ObjectOutputSteam(new FileOutputStream(this.caminhoDoArquivo)))
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.caminhoDoArquivo)))
         {
             oos.writeObject(dados); // serializa o objeto de dados
+        }
+        catch (Exception e)
+        {
+            // se ocorrer um erro de IO, vamos lançar uma exceção
+            throw new Exception("Erro ao salvar os dados no arquivo: " + e.getMessage());
         }
 
     }
@@ -35,12 +40,13 @@ public class ArmazenamentoEmArquivo implements ServicoDeArmazenamento
         File arquivo = new File(caminhoDoArquivo); 
 
         // verifica se o arquivo de dados já existe
+        
         if (arquivo.exists())
         {
             // se ele existe, vamos ler o objeto de dados dentro dele
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo)))
             {
-                return (DadosDoSistema) ois.readObject();
+                 return (DadosDoSistema) ois.readObject();
             }
         }
 
@@ -49,8 +55,6 @@ public class ArmazenamentoEmArquivo implements ServicoDeArmazenamento
             // nesse caso, vamos retornar um novo objeto de dados vazio
             return new DadosDoSistema();
         }
-
-        
         
 
     }

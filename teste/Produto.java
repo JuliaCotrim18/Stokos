@@ -104,10 +104,5 @@ public class Produto implements Serializable
     this.precoUnitario = precoUnitario;
   }
 
-  @Override
-  public String toString() 
-  {
-      return "ID: " + id + " | Produto: " + nomeDoProduto + " | Qtd: " + quantidadeDisponivel;
-  }
 }
 

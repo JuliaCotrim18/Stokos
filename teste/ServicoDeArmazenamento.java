@@ -13,7 +13,7 @@ public interface ServicoDeArmazenamento {
      * @param estoque O objeto Estoque a ser salvo.
      * @throws Exception Se ocorrer um erro durante a gravação.
      */
-    void salvarDados(Estoque estoque) throws Exception; // todo serviço de armazenamento deve salvar nosso estoque
+    void salvarDados(DadosDoSistema dados) throws Exception; // todo serviço de armazenamento deve salvar nosso estoque
 
     /**
      * Carrega o estado do estoque.

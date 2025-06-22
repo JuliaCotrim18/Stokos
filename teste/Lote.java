@@ -11,7 +11,7 @@ public class Lote implements Serializable
     public Lote(Produto produto, int quantidade, Fornecedor fornecedor)
     {
         this.produto = produto;
-        this.quantidade = quantidadeInicial;
+        this.quantidade = quantidade;
         this.fornecedor = fornecedor;
     }
 

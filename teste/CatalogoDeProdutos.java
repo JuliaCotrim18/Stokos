@@ -23,7 +23,7 @@ public class CatalogoDeProdutos implements Serializable
         return false; // Produto não encontrado
     }
 
-    public void registrarProduto(Produto produto) throws ProdutoJaCadastradoException 
+    public void cadastrarProduto(Produto produto) throws ProdutoJaCadastradoException 
     {
         // verifica se o produto já está cadastrado
         if ( verificaProdutoCadastrado(produto.getCodigoDeBarras()) )
@@ -34,7 +34,7 @@ public class CatalogoDeProdutos implements Serializable
         listaDeProdutos.add(produto);
     }
     
-    public void removerProduto(String codigoDeBarras) throws ProdutoNaoEncontradoException 
+    public void removerProduto(String codigoDeBarras) throws ProdutoNaoCadastradoException 
     {
         Produto produtoParaRemover = null;
 
@@ -48,7 +48,7 @@ public class CatalogoDeProdutos implements Serializable
         }
 
         if (produtoParaRemover == null) {
-            throw new ProdutoNaoEncontradoException("Produto não encontrado: " + codigoDeBarras);
+            throw new ProdutoNaoCadastradoException("Produto não encontrado: " + codigoDeBarras);
         }
 
         listaDeProdutos.remove(produtoParaRemover);

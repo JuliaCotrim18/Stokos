@@ -8,10 +8,23 @@ public class Main {
         // Cria uma instância do ArmazenamentoEmArquivo
         ServicoDeArmazenamento armazenamento = new ArmazenamentoEmArquivo("estoque.stk");
 
-        DadosDoSistema dadosDoSistema = armazenamento.carregarDados();
-
+        DadosDoSistema dadosDoSistema;
+        
+        try
+        {
+            dadosDoSistema = armazenamento.carregarDados();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Erro ao carregar dados: " + e.getMessage());
+            // Se não conseguir carregar, cria um novo objeto de DadosDoSistema
+            dadosDoSistema = new DadosDoSistema();
+        }
         // instância uma classe CatalogoDeProdutos
         CatalogoDeProdutos catalogo = new CatalogoDeProdutos();
+        
+        
+
 
         // instância uma classe Estoque, passando o catálogo de produtos como parâmetro
         Estoque estoque = new Estoque(catalogo);
@@ -33,7 +46,7 @@ public class Main {
             catalogo.cadastrarProduto(produto1);
 
         }
-        catch (ProdutoJaCadastradoExcepetion e)
+        catch (ProdutoJaCadastradoException e)
         {
             System.out.println("Erro ao cadastrar produto: " + e.getMessage());
         }
