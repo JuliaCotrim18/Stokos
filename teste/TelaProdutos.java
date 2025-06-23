@@ -1,41 +1,21 @@
-// TelaProdutos.java
+// TelaProdutos.java (versão com AppContext)
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Tela principal para o gerenciamento de produtos do catálogo.
- * Permite cadastrar, pesquisar, alterar e remover produtos.
- * O acesso a certas funções é restrito por cargo.
- */
 public class TelaProdutos extends JFrame {
-    // --- Atributos de Dados ---
-    private DadosDoSistema dados;
-    private Usuario usuario;
-
     // --- Atributos de Componentes da UI ---
-    // Atributos para que possamos acessá-los depois para adicionar eventos
     private JButton botaoCadastrarNovoProduto;
     private JTextField campoPesquisarProduto;
     private JButton botaoPesquisarProduto;
-
-    // Campos de texto para exibir os dados do produto encontrado
-    private JTextField campoId;
-    private JTextField campoNome;
-    private JTextField campoPreco;
-    private JTextField campoCodBarras;
-    private JTextField campoCategoria;
-
+    private JTextArea areaInfoProduto; // Usando JTextArea para mais flexibilidade
     private JButton botaoAlterarDados;
     private JButton botaoRemoverProduto;
+    private JButton botaoVoltar;
 
     // --- Construtor ---
-    public TelaProdutos(DadosDoSistema dados, Usuario usuario) {
+    public TelaProdutos() {
         super("Stokos - Gerenciamento de Produtos");
-        // Injeta as dependências
-        this.dados = dados;
-        this.usuario = usuario;
-
         configurarJanela();
         inicializarComponentes();
     }
@@ -43,13 +23,11 @@ public class TelaProdutos extends JFrame {
     // --- Métodos de Configuração da UI ---
     private void configurarJanela() {
         this.setSize(800, 600);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // DISPOSE para janelas secundárias
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setLayout(new BorderLayout(10, 10)); // Layout principal com espaçamento
     }
 
     private void inicializarComponentes() {
-        // O construtor agora só coordena a montagem.
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -61,88 +39,66 @@ public class TelaProdutos extends JFrame {
     }
 
     private JPanel criarPainelNorte() {
-        // Painel que organiza tudo verticalmente
         JPanel painelNorte = new JPanel();
         painelNorte.setLayout(new BoxLayout(painelNorte, BoxLayout.Y_AXIS));
 
-        // Botão de cadastro
-        this.botaoCadastrarNovoProduto = new JButton("Cadastrar Novo Produto");
-        this.botaoCadastrarNovoProduto.setAlignmentX(Component.CENTER_ALIGNMENT);
-        painelNorte.add(this.botaoCadastrarNovoProduto);
-
-        // Espaço vertical
-        painelNorte.add(Box.createRigidArea(new Dimension(0, 20)));
-
-        // Sub-painel para a pesquisa (itens lado a lado)
-        JPanel painelPesquisa = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        botaoCadastrarNovoProduto = new JButton("Cadastrar Novo Produto no Catálogo");
+        botaoCadastrarNovoProduto.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botaoCadastrarNovoProduto.addActionListener(e -> {
+            // A TelaCadastrarProduto também se torna independente
+            // Supondo que você terá uma TelaCadastrarProduto refatorada
+            // new TelaCadastrarProduto().setVisible(true);
+            JOptionPane.showMessageDialog(this, "Funcionalidade 'Cadastrar' a ser implementada.");
+        });
+        painelNorte.add(botaoCadastrarNovoProduto);
         
+        painelNorte.add(Box.createRigidArea(new Dimension(0, 20)));
+        
+        JPanel painelPesquisa = new JPanel(new FlowLayout(FlowLayout.CENTER));
         painelPesquisa.add(new JLabel("Pesquisar por Código:"));
-        this.campoPesquisarProduto = new JTextField(25);
-        painelPesquisa.add(this.campoPesquisarProduto);
-        this.botaoPesquisarProduto = new JButton("Pesquisar");
-        painelPesquisa.add(this.botaoPesquisarProduto);
-
+        campoPesquisarProduto = new JTextField(25);
+        painelPesquisa.add(campoPesquisarProduto);
+        botaoPesquisarProduto = new JButton("Pesquisar");
+        painelPesquisa.add(botaoPesquisarProduto);
+        
         painelNorte.add(painelPesquisa);
         return painelNorte;
     }
 
-    private JPanel criarPainelCentro() {
-        // Painel para exibir os detalhes do produto pesquisado
-        JPanel painelCentro = new JPanel();
-        // Usamos GridLayout para organizar os campos em formato de formulário
-        painelCentro.setLayout(new GridLayout(5, 2, 5, 5)); 
-        painelCentro.setBorder(BorderFactory.createTitledBorder("Dados do Produto")); // Borda com título
-
-        // Inicializa os campos de texto, inicialmente não editáveis
-        campoId = new JTextField();
-        campoId.setEditable(false);
-        campoNome = new JTextField();
-        campoNome.setEditable(false);
-        campoPreco = new JTextField();
-        campoPreco.setEditable(false);
-        campoCodBarras = new JTextField();
-        campoCodBarras.setEditable(false);
-        campoCategoria = new JTextField();
-        campoCategoria.setEditable(false);
-        
-        // Adiciona os rótulos e campos ao painel
-        painelCentro.add(new JLabel("ID:"));
-        painelCentro.add(campoId);
-        painelCentro.add(new JLabel("Nome:"));
-        painelCentro.add(campoNome);
-        painelCentro.add(new JLabel("Preço Unitário:"));
-        painelCentro.add(campoPreco);
-        painelCentro.add(new JLabel("Cód. Barras:"));
-        painelCentro.add(campoCodBarras);
-        painelCentro.add(new JLabel("Categoria:"));
-        painelCentro.add(campoCategoria);
-
-        return painelCentro;
+    private JScrollPane criarPainelCentro() {
+        areaInfoProduto = new JTextArea();
+        areaInfoProduto.setEditable(false);
+        areaInfoProduto.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        areaInfoProduto.setText("Pesquise por um produto para ver os detalhes aqui...");
+        // Colocamos a área de texto dentro de um painel de rolagem
+        JScrollPane scrollPane = new JScrollPane(areaInfoProduto);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Dados do Produto"));
+        return scrollPane;
     }
 
     private JPanel criarPainelSul() {
-        // Painel para os botões de ação na parte inferior
-        JPanel painelSul = new JPanel();
-        painelSul.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
-        // Cria os botões
-        this.botaoAlterarDados = new JButton("Alterar Dados");
-        this.botaoRemoverProduto = new JButton("Remover Produto do Catálogo");
+        botaoAlterarDados = new JButton("Alterar Dados");
+        botaoRemoverProduto = new JButton("Remover Produto do Catálogo");
+        botaoVoltar = new JButton("Voltar ao Menu");
 
         // --- LÓGICA DE PERMISSÃO ---
-        // Verifica o cargo do usuário logado
-        if (usuario.getCargo() != Cargo.CEO) {
-            // Se não for CEO, desabilita os botões e adiciona uma dica
-            this.botaoAlterarDados.setEnabled(false);
-            this.botaoRemoverProduto.setEnabled(false);
-            this.botaoAlterarDados.setToolTipText("Acesso restrito ao cargo de CEO.");
-            this.botaoRemoverProduto.setToolTipText("Acesso restrito ao cargo de CEO.");
+        AppContext app = AppContext.getInstance();
+        if (app.getUsuarioLogado().getCargo() != Cargo.CEO) {
+            botaoAlterarDados.setEnabled(false);
+            botaoRemoverProduto.setEnabled(false);
         }
         
-        // Adiciona os botões ao painel
-        painelSul.add(this.botaoAlterarDados);
-        painelSul.add(this.botaoRemoverProduto);
+        // Ação para o botão Voltar
+        botaoVoltar.addActionListener(e -> {
+            new TelaPrincipal().setVisible(true);
+            this.dispose();
+        });
 
+        painelSul.add(botaoAlterarDados);
+        painelSul.add(botaoRemoverProduto);
+        painelSul.add(botaoVoltar);
         return painelSul;
     }
 }

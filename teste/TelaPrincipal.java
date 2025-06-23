@@ -1,58 +1,87 @@
-// TelaPrincipal.java
+// TelaPrincipal.java (versão com AppContext)
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TelaPrincipal extends JFrame
-{
-    private DadosDoSistema dados;
-    private Usuario usuario;
+public class TelaPrincipal extends JFrame {
 
-    private JButton botaoAvisos;
-    private JButton botaoRelatorios;
-    private JButton botaoProdutos;
-    private JButton botaoEstoque;
-
-    public TelaPrincipal(DadosDoSistema dados, Usuario usuario)
-    {
+    public TelaPrincipal() {
         super("Stokos - Menu Principal");
+        configurarJanela();
+        inicializarComponentes();
+    }
 
-        // Inicializa os dados e o usuário
-        this.dados = dados;
-        this.usuario = usuario;
-
+    private void configurarJanela() {
         this.setSize(400, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+    }
 
+    private void inicializarComponentes() {
+        // Pega a instância do AppContext para obter informações
+        AppContext app = AppContext.getInstance();
+        Usuario usuarioLogado = app.getUsuarioLogado();
+
+        // Painel principal com os botões
         JPanel painelDeBotoes = new JPanel();
-
         painelDeBotoes.setLayout(new BoxLayout(painelDeBotoes, BoxLayout.Y_AXIS));
-        painelDeBotoes.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        painelDeBotoes.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Cria os botões do menu
-        botaoAvisos = new JButton("Avisos e Alertas");
-        botaoRelatorios = new JButton("Relatórios");
-        botaoProdutos = new JButton("Produtos");
-        botaoEstoque = new JButton("Estoque");
+        // --- Boas-vindas ao usuário ---
+        JLabel labelBoasVindas = new JLabel("Bem-vindo(a), " + usuarioLogado.getNomeDeUsuario() + "!");
+        labelBoasVindas.setFont(new Font("Arial", Font.BOLD, 16));
+        labelBoasVindas.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Adiciona os botões ao painel
+        // --- Botões do Menu ---
+        JButton botaoAvisos = criarBotaoMenu("Avisos e Alertas");
+        JButton botaoRelatorios = criarBotaoMenu("Relatórios");
+        JButton botaoProdutos = criarBotaoMenu("Gerenciar Produtos (Catálogo)");
+        JButton botaoEstoque = criarBotaoMenu("Gerenciar Estoque (Lotes)");
+        JButton botaoSair = criarBotaoMenu("Sair (Logout)");
+
+        // Adiciona a ação para o botão de Produtos
+        botaoProdutos.addActionListener(e -> {
+            new TelaProdutos().setVisible(true);
+            this.dispose();
+        });
+        
+        // Adiciona a ação para o botão de Sair
+        botaoSair.addActionListener(e -> {
+            app.setUsuarioLogado(null); // Limpa o usuário da sessão
+            new TelaLogin().setVisible(true);
+            this.dispose();
+        });
+        
+        // Lógica de permissão para o Estagiário
+        if (usuarioLogado.getCargo() == Cargo.ESTAGIARIO) {
+            botaoProdutos.setEnabled(false);
+            botaoEstoque.setEnabled(false);
+            botaoProdutos.setToolTipText("Acesso restrito ao cargo de CEO.");
+            botaoEstoque.setToolTipText("Acesso restrito ao cargo de CEO.");
+        }
+
+        // Adiciona tudo ao painel
+        painelDeBotoes.add(labelBoasVindas);
+        painelDeBotoes.add(Box.createVerticalGlue()); // Espaço flexível
         painelDeBotoes.add(botaoAvisos);
         painelDeBotoes.add(Box.createRigidArea(new Dimension(0, 10)));
         painelDeBotoes.add(botaoRelatorios);
-        painelDeBotoes.add(Box.createRigidArea(new Dimension(0, 10)));      
+        painelDeBotoes.add(Box.createRigidArea(new Dimension(0, 10)));
         painelDeBotoes.add(botaoProdutos);
         painelDeBotoes.add(Box.createRigidArea(new Dimension(0, 10)));
         painelDeBotoes.add(botaoEstoque);
-
-        // Cria o painel com rolagem e coloca nosso painel de botões DENTRO
-
+        painelDeBotoes.add(Box.createVerticalGlue()); // Espaço flexível
+        painelDeBotoes.add(botaoSair);
+        
         JScrollPane scrollPane = new JScrollPane(painelDeBotoes);
-
-        // Adiciona o painel de rolagem ao JFrame
         this.add(scrollPane);
-
     }
 
-    
+    // Método ajudante para criar botões padronizados
+    private JButton criarBotaoMenu(String texto) {
+        JButton botao = new JButton(texto);
+        botao.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40)); // Altura fixa, largura máxima
+        botao.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return botao;
+    }
 }
