@@ -1,62 +1,101 @@
 // TelaLogin.java
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-/**
- * a classe TelaLogin representa a primeira janela
- * que o usuário verá ao iniciar o programa.
- * Ele pede o nome do usuário e a senha.
- * Ela herda de JFrame, é uma janela
- */
+public class TelaLogin extends JFrame {
 
- public class TelaLogin extends JFrame
- {
-    private JPanel painel;
-    private JLabel labelUsuario;
+    // --- Atributos ---
+    // Atributo para guardar a referência ao serviço de autenticação
+    private ServicoDeAutenticacao servicoAuth;
+    private DadosDoSistema dados;
+
+    // Componentes da interface
     private JTextField campoUsuario;
-    private JLabel labelSenha;
     private JPasswordField campoSenha;
     private JButton botaoEntrar;
 
-    // Construtor da classe
-    public TelaLogin()
+    // --- Construtor ---
+    /**
+     * Construtor da TelaLogin.
+     * @param servicoAuth A instância do serviço de autenticação que a tela usará.
+     */
+    public TelaLogin(DadosDoSistema dados, ServicoDeAutenticacao servicoAuth) 
     {
         super("Stokos - Login");
+
+        // 1. Injeta a dependência
+        this.servicoAuth = servicoAuth;
+        this.dados = dados;
+
+        // 2. Configura a janela
         this.setSize(350, 200);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        this.setLayout(new GridLayout(3, 2, 10, 10)); // Layout de grade para organizar
 
-        painel = new JPanel();
-        painel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        // 3. Cria e adiciona os componentes
+        this.add(new JLabel("Usuário:"));
+        campoUsuario = new JTextField();
+        this.add(campoUsuario);
 
-        labelUsuario = new JLabel("Usuário:");
-        campoUsuario = new JTextField(20);
+        this.add(new JLabel("Senha:"));
+        campoSenha = new JPasswordField();
+        this.add(campoSenha);
 
-        labelSenha = new JLabel("Senha:");
-        campoSenha = new JPasswordField(20);
+        // Adiciona um componente vazio para pular uma célula da grade
+        this.add(new JLabel()); 
 
         botaoEntrar = new JButton("Entrar");
+        this.add(botaoEntrar);
 
-        painel.add(labelUsuario);
-        painel.add(campoUsuario);
-        painel.add(labelSenha);
-        painel.add(campoSenha);
-        painel.add(botaoEntrar);
+        // 4. Adiciona o Event Handling (Ação do Botão)
+        adicionarListenerBotaoEntrar();
+    }
 
-        this.add(painel);
+    /**
+     * Método privado que configura o ActionListener para o botão de login.
+     */
+    private void adicionarListenerBotaoEntrar() {
+        botaoEntrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Pega os dados digitados pelo usuário
+                String nomeUsuario = campoUsuario.getText();
+                String senha = new String(campoSenha.getPassword());
+
+                // Usa o serviço de autenticação para validar
+                Usuario usuarioAutenticado = servicoAuth.autenticar(nomeUsuario, senha);
+
+                if (usuarioAutenticado != null) {
+                    // Se o login for bem-sucedido...
+                    JOptionPane.showMessageDialog(TelaLogin.this, "Bem-vindo(a), " + usuarioAutenticado.getNomeDeUsuario() + "!");
+                    
+                    // Abre a tela principal
+                   
+                    TelaPrincipal telaPrincipal = new TelaPrincipal(dados, usuarioAutenticado);
+                    telaPrincipal.setVisible(true);
+
+                    // Fecha a tela de login
+                    TelaLogin.this.dispose();
+
+                } else {
+                    // Se o login falhar, mostra uma mensagem de erro
+                    JOptionPane.showMessageDialog(TelaLogin.this, "Usuário ou senha inválidos.", "Erro de Login", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     public static void main(String[] args)
     {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                TelaLogin telaLogin = new TelaLogin();
-                telaLogin.setVisible(true);
-            }
-        });
+        // Cria uma instância de DadosDoSistema e ServicoDeAutenticacao
+        DadosDoSistema dados = new DadosDoSistema();
+        ServicoDeAutenticacao servicoAuth = new ServicoDeAutenticacao();
+
+        // Cria e exibe a tela de login
+        TelaLogin telaLogin = new TelaLogin(dados, servicoAuth);
+        telaLogin.setVisible(true);
     }
- }
+}

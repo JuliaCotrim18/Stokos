@@ -5,14 +5,22 @@ import java.awt.*;
 
 public class TelaPrincipal extends JFrame
 {
+    private DadosDoSistema dados;
+    private Usuario usuario;
+
     private JButton botaoAvisos;
     private JButton botaoRelatorios;
     private JButton botaoProdutos;
     private JButton botaoEstoque;
 
-    public TelaPrincipal()
+    public TelaPrincipal(DadosDoSistema dados, Usuario usuario)
     {
         super("Stokos - Menu Principal");
+
+        // Inicializa os dados e o usuário
+        this.dados = dados;
+        this.usuario = usuario;
+
         this.setSize(400, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
@@ -46,12 +54,5 @@ public class TelaPrincipal extends JFrame
 
     }
 
-    // Main para teste
-    public static void main(String[] args)
-    {
-        SwingUtilities.invokeLater(() -> {
-            TelaPrincipal tela = new TelaPrincipal();
-            tela.setVisible(true);
-        });
-    }
+    
 }
