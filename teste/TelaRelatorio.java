@@ -2,7 +2,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class TelaRelatorios extends JFrame {
+public class TelaRelatorio extends JFrame {
 
     // --- Atributos de Componentes da UI ---
     private JButton botaoVoltar;
@@ -11,7 +11,7 @@ public class TelaRelatorios extends JFrame {
     private JButton botaoExportar;
 
     // --- Construtor ---
-    public TelaRelatorios() {
+    public TelaRelatorio() {
         super("Stokos - Relatório de Produtos");
 
         configurarJanela();
@@ -36,6 +36,11 @@ public class TelaRelatorios extends JFrame {
     private JPanel criarPainelNorte() {
         JPanel painelNorte = new JPanel(new FlowLayout(FlowLayout.LEFT));
         botaoVoltar = new JButton("Voltar");
+        botaoVoltar.addActionListener(e -> 
+        {
+            new TelaPrincipal().setVisible(true);
+            this.dispose();
+        });
         painelNorte.add(botaoVoltar);
         return painelNorte;
     }

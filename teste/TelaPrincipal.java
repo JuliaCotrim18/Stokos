@@ -39,6 +39,13 @@ public class TelaPrincipal extends JFrame {
         JButton botaoEstoque = criarBotaoMenu("Gerenciar Estoque (Lotes)");
         JButton botaoSair = criarBotaoMenu("Sair (Logout)");
 
+       // Adiciona a ação para o botão de Estoque
+       botaoEstoque.addActionListener(e -> 
+       {
+            new TelaEstoque().setVisible(true);
+            this.dispose();
+       }); 
+
         // Adiciona a ação para o botão de Produtos
         botaoProdutos.addActionListener(e -> {
             new TelaProdutos().setVisible(true);
@@ -51,14 +58,22 @@ public class TelaPrincipal extends JFrame {
             new TelaLogin().setVisible(true);
             this.dispose();
         });
+
+        // Adiciona a ação para o botao de avisos
+        botaoAvisos.addActionListener(e -> 
+        {
+            new TelaAvisos().setVisible(true);
+            this.dispose();
+
+        });
+
+        // Adiciona a ação para o botão de Relatórios
+        botaoRelatorios.addActionListener(e -> 
+        {
+            new TelaRelatorio().setVisible(true);
+            this.dispose();
+        }); 
         
-        // Lógica de permissão para o Estagiário
-        if (usuarioLogado.getCargo() == Cargo.ESTAGIARIO) {
-            botaoProdutos.setEnabled(false);
-            botaoEstoque.setEnabled(false);
-            botaoProdutos.setToolTipText("Acesso restrito ao cargo de CEO.");
-            botaoEstoque.setToolTipText("Acesso restrito ao cargo de CEO.");
-        }
 
         // Adiciona tudo ao painel
         painelDeBotoes.add(labelBoasVindas);

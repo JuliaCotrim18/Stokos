@@ -1,5 +1,3 @@
-// TelaProdutos.java (versão com AppContext)
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,19 +6,24 @@ public class TelaProdutos extends JFrame {
     private JButton botaoCadastrarNovoProduto;
     private JTextField campoPesquisarProduto;
     private JButton botaoPesquisarProduto;
-    private JTextArea areaInfoProduto; // Usando JTextArea para mais flexibilidade
+    
+    // Campos de texto individuais para facilitar a edição
+    private JTextField campoId, campoNome, campoPreco, campoCodBarras, campoCategoria;
+    
     private JButton botaoAlterarDados;
     private JButton botaoRemoverProduto;
+    private JButton botaoConfirmarAlteracoes; // Novo botão, inicialmente invisível
     private JButton botaoVoltar;
 
-    // --- Construtor ---
+    // Guarda o produto que está sendo exibido/editado
+    private Produto produtoEmExibicao;
+
     public TelaProdutos() {
         super("Stokos - Gerenciamento de Produtos");
         configurarJanela();
         inicializarComponentes();
     }
 
-    // --- Métodos de Configuração da UI ---
     private void configurarJanela() {
         this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -39,49 +42,78 @@ public class TelaProdutos extends JFrame {
     }
 
     private JPanel criarPainelNorte() {
+        // ... (código do painel norte permanece o mesmo, por enquanto sem ação)
         JPanel painelNorte = new JPanel();
         painelNorte.setLayout(new BoxLayout(painelNorte, BoxLayout.Y_AXIS));
-
         botaoCadastrarNovoProduto = new JButton("Cadastrar Novo Produto no Catálogo");
         botaoCadastrarNovoProduto.setAlignmentX(Component.CENTER_ALIGNMENT);
         botaoCadastrarNovoProduto.addActionListener(e -> {
-            // A TelaCadastrarProduto também se torna independente
-            // Supondo que você terá uma TelaCadastrarProduto refatorada
-            // new TelaCadastrarProduto().setVisible(true);
-            JOptionPane.showMessageDialog(this, "Funcionalidade 'Cadastrar' a ser implementada.");
+            // Aqui você pode abrir a tela de cadastro de produto
+            new TelaCadastrarProduto().setVisible(true);
         });
+
+
         painelNorte.add(botaoCadastrarNovoProduto);
-        
         painelNorte.add(Box.createRigidArea(new Dimension(0, 20)));
-        
         JPanel painelPesquisa = new JPanel(new FlowLayout(FlowLayout.CENTER));
         painelPesquisa.add(new JLabel("Pesquisar por Código:"));
         campoPesquisarProduto = new JTextField(25);
         painelPesquisa.add(campoPesquisarProduto);
         botaoPesquisarProduto = new JButton("Pesquisar");
         painelPesquisa.add(botaoPesquisarProduto);
-        
         painelNorte.add(painelPesquisa);
         return painelNorte;
     }
 
     private JScrollPane criarPainelCentro() {
-        areaInfoProduto = new JTextArea();
-        areaInfoProduto.setEditable(false);
-        areaInfoProduto.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        areaInfoProduto.setText("Pesquise por um produto para ver os detalhes aqui...");
-        // Colocamos a área de texto dentro de um painel de rolagem
-        JScrollPane scrollPane = new JScrollPane(areaInfoProduto);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Dados do Produto"));
-        return scrollPane;
+        // Usamos GridLayout para organizar os campos em formato de formulário
+        JPanel painelFormulario = new JPanel(new GridLayout(5, 2, 10, 10));
+        painelFormulario.setBorder(BorderFactory.createTitledBorder("Dados do Produto"));
+
+        campoId = new JTextField();
+        campoId.setEditable(false);
+        campoNome = new JTextField();
+        campoNome.setEditable(false);
+        campoPreco = new JTextField();
+        campoPreco.setEditable(false);
+        campoCodBarras = new JTextField();
+        campoCodBarras.setEditable(false);
+        campoCategoria = new JTextField();
+        campoCategoria.setEditable(false);
+
+        painelFormulario.add(new JLabel("ID:"));
+        painelFormulario.add(campoId);
+        painelFormulario.add(new JLabel("Nome:"));
+        painelFormulario.add(campoNome);
+        painelFormulario.add(new JLabel("Preço Unitário:"));
+        painelFormulario.add(campoPreco);
+        painelFormulario.add(new JLabel("Cód. Barras:"));
+        painelFormulario.add(campoCodBarras);
+        painelFormulario.add(new JLabel("Categoria:"));
+        painelFormulario.add(campoCategoria);
+
+        // Coloca o formulário dentro de um painel de rolagem, como você sugeriu
+        return new JScrollPane(painelFormulario);
     }
 
     private JPanel criarPainelSul() {
-        JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        // O painel sul agora usa BorderLayout para alinhar os botões
+        JPanel painelSul = new JPanel(new BorderLayout());
 
+        // Botão Voltar à esquerda
+        botaoVoltar = new JButton("Voltar ao Menu");
+        botaoVoltar.addActionListener(e -> {
+            new TelaPrincipal().setVisible(true);
+            this.dispose();
+        });
+        painelSul.add(botaoVoltar, BorderLayout.WEST);
+
+        // Painel para os botões de ação à direita
+        JPanel painelAcoes = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         botaoAlterarDados = new JButton("Alterar Dados");
         botaoRemoverProduto = new JButton("Remover Produto do Catálogo");
-        botaoVoltar = new JButton("Voltar ao Menu");
+        botaoConfirmarAlteracoes = new JButton("Confirmar Alterações");
+        botaoConfirmarAlteracoes.setVisible(false); // Começa invisível
 
         // --- LÓGICA DE PERMISSÃO ---
         AppContext app = AppContext.getInstance();
@@ -90,15 +122,38 @@ public class TelaProdutos extends JFrame {
             botaoRemoverProduto.setEnabled(false);
         }
         
-        // Ação para o botão Voltar
-        botaoVoltar.addActionListener(e -> {
-            new TelaPrincipal().setVisible(true);
-            this.dispose();
+        // --- AÇÃO PARA ENTRAR NO "MODO DE EDIÇÃO" ---
+        botaoAlterarDados.addActionListener(e -> {
+            // Só habilita a edição se um produto estiver sendo exibido
+            if (produtoEmExibicao != null) {
+                habilitarModoEdicao(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Pesquise e selecione um produto antes de alterar.", "Nenhum Produto Selecionado", JOptionPane.WARNING_MESSAGE);
+            }
         });
 
-        painelSul.add(botaoAlterarDados);
-        painelSul.add(botaoRemoverProduto);
-        painelSul.add(botaoVoltar);
+        painelAcoes.add(botaoAlterarDados);
+        painelAcoes.add(botaoRemoverProduto);
+        painelAcoes.add(botaoConfirmarAlteracoes);
+        
+        painelSul.add(painelAcoes, BorderLayout.EAST);
         return painelSul;
+    }
+    
+    /**
+     * Habilita ou desabilita o "modo de edição" dos campos do formulário.
+     * @param habilitar true para habilitar a edição, false para desabilitar.
+     */
+    private void habilitarModoEdicao(boolean habilitar) {
+        // Apenas os campos que podem ser alterados
+        campoNome.setEditable(habilitar);
+        campoPreco.setEditable(habilitar);
+        campoCodBarras.setEditable(habilitar);
+        campoCategoria.setEditable(habilitar);
+        
+        // Mostra ou esconde o botão de confirmar
+        botaoConfirmarAlteracoes.setVisible(habilitar);
+        // Desabilita o botão "Alterar" para evitar cliques duplos
+        botaoAlterarDados.setEnabled(!habilitar);
     }
 }
