@@ -1,3 +1,5 @@
+package stokos.model;
+
 // DadosDoSistema.java
 import java.io.Serializable;
 

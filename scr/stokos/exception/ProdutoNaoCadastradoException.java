@@ -1,5 +1,7 @@
 // ProdutoNaoCadastradoException.java
 
+package stokos.exception;
+
 /**
  * Exceção para ser lançada quando se tenta interagir com um produto que ainda não está cadastrado
  **/

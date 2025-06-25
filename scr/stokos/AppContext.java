@@ -1,3 +1,9 @@
+package stokos;
+
+import stokos.service.*;
+import stokos.persistence.*;
+import stokos.model.*;
+
 public class AppContext {
     private static final AppContext instance = new AppContext();
 

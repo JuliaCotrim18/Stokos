@@ -1,3 +1,5 @@
+package stokos.model;
+
 import java.io.Serializable;
 
 

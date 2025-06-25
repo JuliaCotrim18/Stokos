@@ -1,4 +1,9 @@
+package stokos.model;
+
 // CatalogoDeProdutos.java
+
+import stokos.exception.ProdutoNaoCadastradoException;
+import stokos.exception.ProdutoJaCadastradoException; 
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +14,8 @@ public class CatalogoDeProdutos implements Serializable
 {
     private ArrayList<Produto> listaDeProdutos;
 
-    public CatalogoDeProdutos() {
+    public CatalogoDeProdutos() 
+    {
         this.listaDeProdutos = new ArrayList<>();
     }
 

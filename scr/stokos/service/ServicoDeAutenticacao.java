@@ -1,5 +1,9 @@
+package stokos.service;
+
 import java.util.ArrayList;
 
+import stokos.model.Usuario;
+import stokos.model.Cargo;
 
 public class ServicoDeAutenticacao
 {

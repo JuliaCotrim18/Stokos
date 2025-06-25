@@ -6,6 +6,11 @@
  * no nosso caso, temos apenas a opção de armazenar em um arquivo
  * mas no futuro podemos ter outras opções, como banco de dados, por isso a interface.
  */
+
+package stokos.service;
+
+import stokos.model.DadosDoSistema;
+
 public interface ServicoDeArmazenamento {
 
     /**

@@ -1,5 +1,10 @@
 // Main.java (Refatorada com AppContext)
+package stokos;
+
+
+
 import javax.swing.SwingUtilities;
+import stokos.gui.TelaLogin;
 
 /**
  * Ponto de entrada da aplicação Stokos.

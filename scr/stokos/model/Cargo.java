@@ -1,3 +1,5 @@
+package stokos.model;
+
 public enum Cargo
 {
     CEO, // tem acesso a tudo

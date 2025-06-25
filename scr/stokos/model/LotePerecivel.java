@@ -1,14 +1,17 @@
+package stokos.model;
+
 import java.time.LocalDate;
 
-public class LotePerecivel extends Lote
+public class LotePerecivel extends Lote 
 {
     private final LocalDate dataDeValidade;
 
-    LotePerecivel(Produto produto, int quantidadeInicial, Fornecedor fornecedor, LocalDate dataDeValidade)
+    LotePerecivel(Produto produto, int quantidadeInicial, LocalDate dataDeValidade)
     {
-        super(produto, quantidadeInicial, fornecedor);
+        super(produto, quantidadeInicial);
         this.dataDeValidade = dataDeValidade;
     }
+
 
     public LocalDate getDataDeValidade()
     {
@@ -18,6 +21,12 @@ public class LotePerecivel extends Lote
     public int diasAteVencer()
     {
         return LocalDate.now().until(dataDeValidade).getDays();
+    }
+
+    @Override
+    public boolean loteVencido()
+    {
+        return LocalDate.now().isAfter(dataDeValidade);
     }
 
     

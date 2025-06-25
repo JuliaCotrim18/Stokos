@@ -1,6 +1,11 @@
 // ArmazenamentoEmArquivo.java
 
+package stokos.persistence;
+
+
 import java.io.*;
+import stokos.model.DadosDoSistema;
+import stokos.service.ServicoDeArmazenamento;
 
 // Essa classe cuida do armazenamento dos dados do nosso sistema em um arquivo.
 // isso é, ela serializa nossos objetos em um arquivo binário.

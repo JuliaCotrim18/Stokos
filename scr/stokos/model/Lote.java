@@ -1,39 +1,38 @@
-// Lote.java
+package stokos.model;
 
 import java.io.Serializable;
 
-public class Lote implements Serializable
+public abstract class Lote implements Serializable
 {
     private final Produto produto;
-    private int quantidade; 
-    private final Fornecedor fornecedor;
+    private int quantidade;
+    private final int id;
 
-    public Lote(Produto produto, int quantidade, Fornecedor fornecedor)
-    {
-        this.produto = produto;
-        this.quantidade = quantidade;
-        this.fornecedor = fornecedor;
-    }
+    static int quantidadeDeLotes = 0;
 
+    // construtor
     public Lote(Produto produto, int quantidade)
     {
-        this(produto, quantidade, null); // Chama o outro construtor com fornecedor nulo
-    }
+        this.id = ++quantidadeDeLotes;
 
-    public Produto getProduto() 
+        this.produto = produto;
+        this.quantidade = quantidade;
+
+    }
+   
+
+    // getters
+    public Produto getProduto()
     {
         return produto;
     }
-
-    public int getQuantidade() 
+    public int getQuantidade()
     {
         return quantidade;
     }
 
-    public Fornecedor getFornecedor() 
-    {
-        return fornecedor;
-    }
+
+    public abstract boolean loteVencido();
 
     public void removeQuantidade(int quantidade)
     {
@@ -47,7 +46,5 @@ public class Lote implements Serializable
         }
         this.quantidade -= quantidade;
     }
-
-
-
+    
 }

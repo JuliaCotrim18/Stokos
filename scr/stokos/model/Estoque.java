@@ -1,5 +1,9 @@
+package stokos.model;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import stokos.exception.*;
 
 
 // Esta classe representa o estoque da loja
@@ -42,5 +46,13 @@ public class Estoque implements Serializable // Serializable porque vamos serial
         }
 
     }
+
+    public void removerLotesVazios() 
+    {
+        // Remove da listaDeLotes cada 'lote' para o qual a condição 'lote.getQuantidade() == 0' for verdadeira.
+        listaDeLotes.removeIf(lote -> lote.getQuantidade() == 0);
+    }
+
+    
 
 }

@@ -1,5 +1,30 @@
-import javax.swing.*;
-import java.awt.*;
+package stokos.gui;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import stokos.AppContext;
+import stokos.exception.*;
+import stokos.model.CatalogoDeProdutos;
+import stokos.model.Produto;
+import stokos.model.Grandeza;
+import stokos.persistence.*;
+import stokos.service.*;
+
 
 /**
  * Janela para o cadastro de um novo tipo de produto no catálogo.
@@ -49,6 +74,11 @@ public class TelaCadastrarProduto extends JFrame {
     private JPanel criarPainelNorte() {
         JPanel painelNorte = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Alinha à esquerda
         botaoVoltar = new JButton("Voltar");
+        botaoVoltar.addActionListener(e -> 
+        {
+            new TelaProdutos().setVisible(true);
+            this.dispose();
+        });
         painelNorte.add(botaoVoltar);
         return painelNorte;
     }
@@ -135,6 +165,41 @@ public class TelaCadastrarProduto extends JFrame {
     private JPanel criarPainelSul() {
         JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Alinha ao centro
         botaoCadastrar = new JButton("Cadastrar");
+        botaoCadastrar.addActionListener(e ->
+        {
+            AppContext app = AppContext.getInstance();
+            CatalogoDeProdutos catalogo = app.getDados().catalogo;
+
+            Produto novoProduto; // instância novo produto
+
+            // pega as informações do formulário
+            String codigoDeBarras = campoCodigoBarras.getText();
+            String nomeDoProduto = campoNome.getText();
+            double precoUnitario = Double.parseDouble(campoPreco.getText());
+            Grandeza grandeza = (Grandeza) comboGrandeza.getSelectedItem();
+
+            novoProduto = new Produto(codigoDeBarras, nomeDoProduto, precoUnitario, grandeza);
+
+            // tenta cadastrar o produto
+            try
+            {  
+                catalogo.cadastrarProduto(novoProduto);
+
+                // avisa o usuário que deu certo
+                JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!"); 
+
+                // fecha a janela
+                this.dispose();
+
+            }
+            catch (ProdutoJaCadastradoException exc)
+            {
+                JOptionPane.showMessageDialog(this, "Produto já cadastrado");
+
+            }
+
+        });
+
         botaoCadastrar.setPreferredSize(new Dimension(150, 30)); // Tamanho preferido para o botão
         painelSul.add(botaoCadastrar);
         return painelSul;

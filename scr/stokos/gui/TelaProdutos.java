@@ -1,5 +1,10 @@
+package stokos.gui;
+
 import javax.swing.*;
 import java.awt.*;
+import stokos.AppContext; // Para encontrar a classe AppContext
+import stokos.model.Cargo; // Para encontrar o Enum Cargo
+import stokos.model.Produto;
 
 public class TelaProdutos extends JFrame {
     // --- Atributos de Componentes da UI ---

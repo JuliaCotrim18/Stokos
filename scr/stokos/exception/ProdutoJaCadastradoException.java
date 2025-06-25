@@ -1,5 +1,7 @@
 // ProdutoJaCadastradoException.java
 
+package stokos.exception;
+
 /**
  * Exceção para ser lançada quando se tenta cadastrar um produto
  * que já existe no estoque (ex: mesmo código de barras).

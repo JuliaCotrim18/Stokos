@@ -1,7 +1,13 @@
+package stokos.gui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import stokos.model.*;
+import stokos.AppContext;
+
 
 public class TelaLogin extends JFrame {
     private JTextField campoUsuario;
