@@ -59,4 +59,21 @@ public class CatalogoDeProdutos implements Serializable
 
         listaDeProdutos.remove(produtoParaRemover);
     }
+
+
+
+    /**
+     * Busca um produto no catálogo pelo seu código de barras.
+     * @param codigoDeBarras O código de barras a ser procurado.
+     * @return O objeto Produto se for encontrado, ou null se não for.
+     */
+    public Produto buscarProduto(String codigoDeBarras) 
+    {
+        for (Produto produto : listaDeProdutos) {
+            if (produto.getCodigoDeBarras().equals(codigoDeBarras)) {
+                return produto; // Encontrou! Retorna o objeto produto.
+            }
+        }
+        return null; // Não encontrou, retorna null.
+    }
 }

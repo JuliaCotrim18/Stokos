@@ -18,6 +18,15 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+// ... (outras importações)
+import javax.swing.JOptionPane;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import stokos.AppContext;
+import stokos.model.*;
+import stokos.exception.ProdutoNaoCadastradoException;
+
 public class TelaAdicionarLote extends JFrame {
 
     // --- Atributos de Componentes da UI ---
@@ -59,7 +68,7 @@ public class TelaAdicionarLote extends JFrame {
         botaoVoltar = new JButton("Voltar");
         botaoVoltar.addActionListener(e -> 
         {
-            new TelaPrincipal().setVisible(true);
+            new TelaEstoque().setVisible(true);
             this.dispose();
         });
         painelNorte.add(botaoVoltar);
@@ -140,6 +149,70 @@ public class TelaAdicionarLote extends JFrame {
         JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.CENTER));
         botaoAdicionar = new JButton("Adicionar Lote");
         botaoAdicionar.setPreferredSize(new Dimension(150, 30));
+        botaoAdicionar.addActionListener(e -> 
+        {
+            try {
+            // 1. Obter dados da interface
+            String codigoBarras = campoCodigoBarras.getText().trim();
+            int quantidade = Integer.parseInt(campoQuantidade.getText().trim());
+
+            // 2. Validação inicial
+            if (codigoBarras.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "O campo 'Código de Barras' é obrigatório.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (quantidade <= 0) {
+                JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 3. Acessar o contexto e buscar o produto
+            AppContext app = AppContext.getInstance();
+            CatalogoDeProdutos catalogo = app.getDados().catalogo;
+            Produto produtoDoLote = catalogo.buscarProduto(codigoBarras);
+
+            if (produtoDoLote == null) {
+                JOptionPane.showMessageDialog(this, "Nenhum produto encontrado com o código de barras informado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 4. Criar o lote (usando polimorfismo)
+            Lote novoLote;
+            if (radioPerecivel.isSelected()) {
+                // Lote Perecível
+                String textoData = campoDataValidade.getText().trim();
+                if (textoData.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "A data de validade é obrigatória para lotes perecíveis.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate dataValidade = LocalDate.parse(textoData, formatador);
+                novoLote = new LotePerecivel(produtoDoLote, quantidade, dataValidade);
+            } else {
+                // Lote Não Perecível
+                novoLote = new LoteNaoPerecivel(produtoDoLote, quantidade);
+            }
+
+            // 5. Adicionar lote ao estoque
+            app.getDados().estoque.adicionarLote(novoLote);
+            JOptionPane.showMessageDialog(this, "Lote adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+            // 6. Voltar para a tela de estoque
+            new TelaEstoque().setVisible(true);
+            this.dispose();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "A quantidade e o custo devem ser números válidos.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Formato de data inválido. Use dd/mm/aaaa.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+        } catch (ProdutoNaoCadastradoException ex) {
+            // Esta exceção é lançada pelo estoque.adicionarLote
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+
+        });
         painelSul.add(botaoAdicionar);
         return painelSul;
     }

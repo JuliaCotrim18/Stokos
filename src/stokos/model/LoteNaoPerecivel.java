@@ -8,7 +8,7 @@ public class LoteNaoPerecivel extends Lote
 
     public LoteNaoPerecivel(Produto produto, int quantidade)
     {
-        super(null, quantidade);
+        super(produto, quantidade);
     }
 
    

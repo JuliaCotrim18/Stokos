@@ -6,7 +6,7 @@ public class LotePerecivel extends Lote
 {
     private final LocalDate dataDeValidade;
 
-    LotePerecivel(Produto produto, int quantidadeInicial, LocalDate dataDeValidade)
+    public LotePerecivel(Produto produto, int quantidadeInicial, LocalDate dataDeValidade)
     {
         super(produto, quantidadeInicial);
         this.dataDeValidade = dataDeValidade;

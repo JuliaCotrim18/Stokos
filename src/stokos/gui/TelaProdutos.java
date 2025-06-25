@@ -5,6 +5,7 @@ import java.awt.*;
 import stokos.AppContext; // Para encontrar a classe AppContext
 import stokos.model.Cargo; // Para encontrar o Enum Cargo
 import stokos.model.Produto;
+import stokos.model.CatalogoDeProdutos;
 
 public class TelaProdutos extends JFrame {
     // --- Atributos de Componentes da UI ---
@@ -65,6 +66,55 @@ public class TelaProdutos extends JFrame {
         campoPesquisarProduto = new JTextField(25);
         painelPesquisa.add(campoPesquisarProduto);
         botaoPesquisarProduto = new JButton("Pesquisar");
+        botaoPesquisarProduto.addActionListener(e -> 
+        {
+            // Este código vai dentro do ActionListener do seu botaoPesquisarProduto na classe TelaProdutos
+            
+            // 1. Obter o texto do campo de pesquisa
+            String codigoParaBuscar = campoPesquisarProduto.getText().trim();
+            
+            // Validação simples para não pesquisar em branco
+            if (codigoParaBuscar.isEmpty()) 
+            {
+                JOptionPane.showMessageDialog(this, "Por favor, digite um código de barras para pesquisar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // 2. Aceder ao catálogo e realizar a busca
+            CatalogoDeProdutos catalogo = AppContext.getInstance().getDados().catalogo;
+            Produto produtoEncontrado = catalogo.buscarProduto(codigoParaBuscar);
+            
+            // 3. Verificar o resultado da busca
+            if (produtoEncontrado != null) 
+            {
+                // SUCESSO! O produto foi encontrado.
+                
+                // Agora, preenchemos os campos de texto da tela com os dados do produto
+                campoId.setText(String.valueOf(produtoEncontrado.getId()));
+                campoNome.setText(produtoEncontrado.getNomeDoProduto());
+                campoCodBarras.setText(produtoEncontrado.getCodigoDeBarras());
+                campoPreco.setText(String.valueOf(produtoEncontrado.getPrecoUnitario()));
+                campoCategoria.setText(produtoEncontrado.getCategoria());
+                
+                // Opcional: Guardar a referência do produto que está a ser exibido
+                // para ser usado por outros botões (como "Alterar" ou "Remover").
+                this.produtoEmExibicao = produtoEncontrado; 
+            
+            } else 
+            {
+                // ERRO! O produto não foi encontrado.
+                
+                // Limpar os campos e avisar o utilizador
+                campoId.setText("");
+                campoNome.setText("");
+                campoCodBarras.setText("");
+                campoPreco.setText("");
+                campoCategoria.setText("");
+                this.produtoEmExibicao = null; // Limpar a referência
+                
+                JOptionPane.showMessageDialog(this, "Nenhum produto encontrado com o código: " + codigoParaBuscar, "Erro de Busca", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         painelPesquisa.add(botaoPesquisarProduto);
         painelNorte.add(painelPesquisa);
         return painelNorte;
