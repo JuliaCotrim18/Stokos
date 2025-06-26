@@ -3,12 +3,15 @@ package stokos.gui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.IOException;
 
 import stokos.AppContext;
 import stokos.model.CatalogoDeProdutos;
 import stokos.model.Estoque;
 import stokos.model.HistoricoDeVendas;
 import stokos.model.Produto;
+import stokos.service.ServicoDeExportacao;
+import stokos.Config;
 
 public class TelaRelatorios extends JFrame {
 
@@ -75,6 +78,32 @@ public class TelaRelatorios extends JFrame {
     private JPanel criarPainelSul() {
         JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.CENTER));
         botaoExportar = new JButton("Exportar .csv");
+        botaoExportar.addActionListener(e -> 
+        {
+            try
+            {
+                ServicoDeExportacao servico = new ServicoDeExportacao();
+
+                servico.exportarParaCSV(tableModel, Config.CAMINHO_SAIDA_ARQUIVO_CSV);
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Relatório exportado com sucesso para:\n" + Config.CAMINHO_SAIDA_ARQUIVO_CSV,
+                    "Exportação Concluida",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+            catch (IOException ex)
+            {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Ocorreu um erro ao exportar o arquivo:\n" + ex.getMessage(),
+                    "Erro de exportação",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+
+        });
         painelSul.add(botaoExportar);
         return painelSul;
     }
