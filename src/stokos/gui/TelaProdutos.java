@@ -57,6 +57,7 @@ public class TelaProdutos extends JFrame {
         botaoCadastrarNovoProduto.addActionListener(e -> {
             // Aqui você pode abrir a tela de cadastro de produto
             new TelaCadastrarProduto().setVisible(true);
+            this.dispose();
         });
 
 
