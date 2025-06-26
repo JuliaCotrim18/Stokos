@@ -6,6 +6,7 @@ import stokos.AppContext; // Para encontrar a classe AppContext
 import stokos.model.Cargo; // Para encontrar o Enum Cargo
 import stokos.model.Produto;
 import stokos.model.CatalogoDeProdutos;
+import stokos.exception.ProdutoNaoCadastradoException;
 
 public class TelaProdutos extends JFrame {
     // --- Atributos de Componentes da UI ---
@@ -169,6 +170,84 @@ public class TelaProdutos extends JFrame {
         botaoRemoverProduto = new JButton("Remover Produto do Catálogo");
         botaoConfirmarAlteracoes = new JButton("Confirmar Alterações");
         botaoConfirmarAlteracoes.setVisible(false); // Começa invisível
+
+        botaoConfirmarAlteracoes.addActionListener(e -> 
+        {
+            if (produtoEmExibicao == null) 
+            {
+                JOptionPane.showMessageDialog(this, "Nenhum produto está selecionado para atualizar.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try 
+            {
+                // 1. Coletar os novos dados da tela
+                String novoNome = campoNome.getText().trim();
+                String novoCodBarras = campoCodBarras.getText().trim();
+                String novaCategoria = campoCategoria.getText().trim();
+                double novoPreco = Double.parseDouble(campoPreco.getText().trim());
+
+                // 2. Validar para não deixar campos essenciais em branco
+                if (novoNome.isEmpty() || novoCodBarras.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Nome e Código de Barras não podem ser vazios.", "Dados Inválidos", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                // 3. Atualizar o objeto Produto
+                produtoEmExibicao.setNomeDoProduto(novoNome);
+                produtoEmExibicao.setCodigoDeBarras(novoCodBarras);
+                produtoEmExibicao.setCategoria(novaCategoria);
+                produtoEmExibicao.setPrecoUnitario(novoPreco);
+
+                // 4. Feedback para o usuário e sair do modo de edição
+                JOptionPane.showMessageDialog(this, "Produto atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                habilitarModoEdicao(false);
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "O preço deve ser um número válido.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao atualizar o produto: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+
+        botaoRemoverProduto.addActionListener( e -> 
+        {
+            if (produtoEmExibicao == null) {
+        JOptionPane.showMessageDialog(this, "Pesquise e selecione um produto antes de remover.", "Nenhum Produto Selecionado", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Pedir confirmação
+    int resposta = JOptionPane.showConfirmDialog(
+        this,
+        "Tem certeza que deseja remover o produto '" + produtoEmExibicao.getNomeDoProduto() + "' do catálogo?\nEsta ação não pode ser desfeita.",
+        "Confirmar Remoção",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.WARNING_MESSAGE
+    );
+
+    if (resposta == JOptionPane.YES_OPTION) {
+        try {
+            // Remover o produto do catálogo
+            AppContext.getInstance().getDados().catalogo.removerProduto(produtoEmExibicao.getCodigoDeBarras());
+
+            // Limpar a tela e a referência
+            campoId.setText("");
+            campoNome.setText("");
+            campoCodBarras.setText("");
+            campoPreco.setText("");
+            campoCategoria.setText("");
+            produtoEmExibicao = null;
+
+            JOptionPane.showMessageDialog(this, "Produto removido com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (ProdutoNaoCadastradoException ex) {
+            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro de Remoção", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+        });
 
         // --- LÓGICA DE PERMISSÃO ---
         AppContext app = AppContext.getInstance();

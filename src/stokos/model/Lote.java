@@ -31,6 +31,11 @@ public abstract class Lote implements Serializable
         return quantidade;
     }
 
+    public int getId()
+    {
+        return this.id;
+    }
+
 
     public abstract boolean loteVencido();
 

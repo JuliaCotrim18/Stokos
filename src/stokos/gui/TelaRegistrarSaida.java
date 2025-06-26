@@ -6,13 +6,19 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.security.auth.login.AppConfigurationEntry;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import stokos.AppContext;
+import stokos.model.Estoque;
+import stokos.exception.*;
 
 public class TelaRegistrarSaida extends JFrame {
 
@@ -110,6 +116,45 @@ public class TelaRegistrarSaida extends JFrame {
         JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Centralizado com espaçamento
 
         botaoRegistrarVenda = new JButton("Registrar Venda");
+        botaoRegistrarVenda.addActionListener(e ->
+        {
+            try {
+        // Pega os dados e valida
+        String codigoBarras = campoCodigoBarras.getText().trim();
+        int quantidade = Integer.parseInt(campoQuantidade.getText().trim());
+
+        if (codigoBarras.isEmpty() || quantidade <= 0) {
+            // Informa sobre dados inválidos
+            JOptionPane.showMessageDialog(this, "Código de Barras e Quantidade são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Estoque estoque = AppContext.getInstance().getDados().estoque;
+        
+        // Chama o método correto: registrarVenda
+        estoque.registrarVenda(codigoBarras, quantidade);
+
+        // Dá feedback de sucesso para o usuário!
+        String acao = (e.getSource() == botaoRegistrarVenda) ? "Venda" : "Descarte";
+        JOptionPane.showMessageDialog(this, acao + " registrada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        
+        // Limpa os campos para a próxima operação
+        campoCodigoBarras.setText("");
+        campoQuantidade.setText("");
+        campoComprador.setText("");
+
+    } catch (NumberFormatException ex) {
+        // Captura o erro de formato E informa o usuário
+        JOptionPane.showMessageDialog(this, "A quantidade deve ser um número inteiro válido.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+    } catch (ProdutoNaoCadastradoException | IllegalArgumentException ex) {
+        // Captura os erros da lógica de negócio E informa o usuário
+        JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro de Lógica", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception ex) {
+        // Captura qualquer outro erro inesperado
+        JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro Crítico", JOptionPane.ERROR_MESSAGE);
+    }
+}
+        );
         botaoRegistrarDescarte = new JButton("Registrar Descarte");
 
         // Adiciona os botões ao painel

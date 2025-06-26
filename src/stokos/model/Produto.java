@@ -14,6 +14,7 @@ public class Produto implements Serializable
   private String categoria; // categoria do produto "Laticínios", "Hortifruti", "Padaria", etc.
   private String nomeDoProduto; // nome do produto ex. "Leite Longa Vida Desnatado 1L"
   private int quantidadeVendida; // número de unidades vendidas
+  private int quantidadeDescartada;
   private double precoUnitario; // preço por unidade do produto
   private final Grandeza grandeza; // o produto é medido em que grandeza (PESO, UNIDADE ou VOLUME)
 
@@ -34,6 +35,7 @@ public class Produto implements Serializable
     this.codigoDeBarras = codigoDeBarras;
 
     this.quantidadeVendida = 0; // inicializa a quantidade vendida como 0
+    this.quantidadeDescartada = 0; // inicializa a quantidade descartada como 0
     
     
   }
@@ -108,12 +110,27 @@ public class Produto implements Serializable
   }
 
   // Outros métodos
-  public void registraVenda(int quantidadeVendida)
+  public void registrarVenda(int quantidadeVendida)
   {
     if (quantidadeVendida <= 0) {
       throw new IllegalArgumentException("Quantidade vendida deve ser maior que zero.");
     }
     this.quantidadeVendida += quantidadeVendida; // incrementa a quantidade vendida
+  }
+
+  public int getQuantidadeDescartada()
+  {
+    return this.quantidadeDescartada;
+  }
+
+  public void registrarDescarte(int quantidade)
+  {
+    if (quantidade <= 0)
+    {
+      throw new IllegalArgumentException("Quantidade descartada deve ser maior que zero.");
+    }
+
+    this.quantidadeDescartada += quantidade;
   }
 
 
