@@ -76,4 +76,9 @@ public class CatalogoDeProdutos implements Serializable
         }
         return null; // Não encontrou, retorna null.
     }
+
+    public ArrayList<Produto> getListaDeProduto()
+    {
+        return this.listaDeProdutos;
+    }
 }

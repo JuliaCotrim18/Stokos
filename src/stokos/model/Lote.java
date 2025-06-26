@@ -51,5 +51,7 @@ public abstract class Lote implements Serializable
         }
         this.quantidade -= quantidade;
     }
+
+    public abstract boolean estaPertoDeVencer();
     
 }

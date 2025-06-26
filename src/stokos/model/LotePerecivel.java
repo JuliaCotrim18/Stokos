@@ -1,6 +1,8 @@
 package stokos.model;
 
+import java.io.ObjectInputFilter.Config;
 import java.time.LocalDate;
+import stokos.Config;
 
 public class LotePerecivel extends Lote 
 {
@@ -27,6 +29,16 @@ public class LotePerecivel extends Lote
     public boolean loteVencido()
     {
         return LocalDate.now().isAfter(dataDeValidade);
+    }
+
+    @Override
+    public boolean estaPertoDeVencer()
+    {
+        if (loteVencido())
+        {
+            return false; // já venceu
+        }
+        return diasAteVencer() <= Config.DIAS_PARA_ESTAR_PROXIMO_DO_VENCIMENTO;
     }
 
     

@@ -19,6 +19,12 @@ public class LoteNaoPerecivel extends Lote
         return false;
     }
 
+    @Override
+    public boolean estaPertoDeVencer()
+    {
+        return false; // lotes não-pereciveis nunca vão vencer
+    }
+
 
 
 }

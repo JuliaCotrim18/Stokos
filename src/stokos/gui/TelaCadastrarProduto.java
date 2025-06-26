@@ -40,6 +40,7 @@ public class TelaCadastrarProduto extends JFrame {
     private JTextField campoPreco;
     private JTextField campoLocal; // Novo campo
     private JButton botaoCadastrar;
+    private JTextField campoEstoqueMinimo;
 
     // --- Construtor ---
     // Removi os parâmetros por enquanto, já que o foco é o design.
@@ -151,6 +152,17 @@ public class TelaCadastrarProduto extends JFrame {
         campoLocal = new JTextField(20);
         painelFormulario.add(campoLocal, gbc);
 
+        // Linha 5
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.weightx = 0;
+        painelFormulario.add(new JLabel("Estoque Mínimo:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        campoEstoqueMinimo = new JTextField(20);
+        painelFormulario.add(campoEstoqueMinimo, gbc);
+
         // Envolve o painel do formulário em um JScrollPane
         JScrollPane scrollPane = new JScrollPane(painelFormulario);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Formulário de Cadastro")); // Título para a área de rolagem
@@ -170,35 +182,43 @@ public class TelaCadastrarProduto extends JFrame {
             AppContext app = AppContext.getInstance();
             CatalogoDeProdutos catalogo = app.getDados().catalogo;
 
-            Produto novoProduto; // instância novo produto
+            try { // Envolver em try-catch para tratar erros de conversão
+                // pega as informações do formulário
+                String codigoDeBarras = campoCodigoBarras.getText();
+                String nomeDoProduto = campoNome.getText();
+                double precoUnitario = Double.parseDouble(campoPreco.getText());
+                Grandeza grandeza = (Grandeza) comboGrandeza.getSelectedItem();
+                
+                // --- CAPTURAR O NOVO VALOR ---
+                double estoqueMinimo = 0;
+                String textoEstoqueMinimo = campoEstoqueMinimo.getText().trim();
+                if (!textoEstoqueMinimo.isEmpty()) {
+                    estoqueMinimo = Double.parseDouble(textoEstoqueMinimo);
+                }
 
-            // pega as informações do formulário
-            String codigoDeBarras = campoCodigoBarras.getText();
-            String nomeDoProduto = campoNome.getText();
-            double precoUnitario = Double.parseDouble(campoPreco.getText());
-            Grandeza grandeza = (Grandeza) comboGrandeza.getSelectedItem();
+                Produto novoProduto = new Produto(codigoDeBarras, nomeDoProduto, precoUnitario, grandeza);
+                novoProduto.setEstoqueMinimo(estoqueMinimo); // --- DEFINIR O VALOR NO PRODUTO ---
+                novoProduto.setCategoria(campoLocal.getText()); // Aproveitando o campo local como categoria
 
-            novoProduto = new Produto(codigoDeBarras, nomeDoProduto, precoUnitario, grandeza);
-
-            // tenta cadastrar o produto
-            try
-            {  
+                // tenta cadastrar o produto
                 catalogo.cadastrarProduto(novoProduto);
 
                 // avisa o usuário que deu certo
                 JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!"); 
 
                 // fecha a janela
+                 new TelaProdutos().setVisible(true);
                 this.dispose();
 
-            }
-            catch (ProdutoJaCadastradoException exc)
-            {
+            } catch (ProdutoJaCadastradoException exc) {
                 JOptionPane.showMessageDialog(this, "Produto já cadastrado");
-
+            } catch (NumberFormatException exc) {
+                JOptionPane.showMessageDialog(this, "Preço e Estoque Mínimo devem ser números válidos.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
             }
-
         });
+
+
+    
 
         botaoCadastrar.setPreferredSize(new Dimension(150, 30)); // Tamanho preferido para o botão
         painelSul.add(botaoCadastrar);

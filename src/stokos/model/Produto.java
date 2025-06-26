@@ -17,6 +17,7 @@ public class Produto implements Serializable
   private int quantidadeDescartada;
   private double precoUnitario; // preço por unidade do produto
   private final Grandeza grandeza; // o produto é medido em que grandeza (PESO, UNIDADE ou VOLUME)
+  private double estoqueMinimo; 
 
   // contadorProdutos é um contador estático que é utilizado para gerar IDs únicos para os produtos
   private static int contadorProdutos = 0; // contador para gerar IDs únicos
@@ -36,7 +37,7 @@ public class Produto implements Serializable
 
     this.quantidadeVendida = 0; // inicializa a quantidade vendida como 0
     this.quantidadeDescartada = 0; // inicializa a quantidade descartada como 0
-    
+    this.estoqueMinimo = 0;
     
   }
 
@@ -82,6 +83,11 @@ public class Produto implements Serializable
   public Grandeza getGrandeza()
   {
     return this.grandeza;
+  }
+
+  public double getEstoqueMinimo()
+  {
+    return this.estoqueMinimo;
   }
 
   //setters
@@ -131,6 +137,16 @@ public class Produto implements Serializable
     }
 
     this.quantidadeDescartada += quantidade;
+  }
+
+  public void setEstoqueMinimo(double estoqueMinimo)
+  {
+    if (estoqueMinimo < 0)
+    {
+      throw new IllegalArgumentException("Estoque minimo não pode ser negativo");
+    }
+
+    this.estoqueMinimo = estoqueMinimo;
   }
 
 
