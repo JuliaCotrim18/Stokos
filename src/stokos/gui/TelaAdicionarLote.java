@@ -39,6 +39,7 @@ public class TelaAdicionarLote extends JFrame {
     private JLabel labelDataValidade; // Rótulo para o campo que aparece/desaparece
     private JTextField campoDataValidade; // Campo que aparece/desaparece
     private JButton botaoAdicionar;
+    
 
     // --- Construtor ---
     public TelaAdicionarLote() {
@@ -154,7 +155,9 @@ public class TelaAdicionarLote extends JFrame {
             try {
             // 1. Obter dados da interface
             String codigoBarras = campoCodigoBarras.getText().trim();
-            int quantidade = Integer.parseInt(campoQuantidade.getText().trim());
+            double quantidade = Double.parseDouble(campoQuantidade.getText().trim());
+            String fornecedor = campoFornecedor.getText().trim();
+            double custo = Double.parseDouble(campoCusto.getText().trim().replace(",", ".")); // para se adequar ao Brasil
 
             // 2. Validação inicial
             if (codigoBarras.isEmpty()) {
@@ -192,6 +195,9 @@ public class TelaAdicionarLote extends JFrame {
                 // Lote Não Perecível
                 novoLote = new LoteNaoPerecivel(produtoDoLote, quantidade);
             }
+
+            novoLote.setFornecedor(fornecedor.isEmpty() ? "Não informado" : fornecedor);
+            novoLote.setCustoDoLote(custo);
 
             // 5. Adicionar lote ao estoque
             app.getDados().estoque.adicionarLote(novoLote);

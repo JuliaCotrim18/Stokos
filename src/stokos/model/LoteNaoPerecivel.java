@@ -5,8 +5,9 @@ package stokos.model;
 
 public class LoteNaoPerecivel extends Lote 
 {
+    private static final long serialVersionUID = 1L;
 
-    public LoteNaoPerecivel(Produto produto, int quantidade)
+    public LoteNaoPerecivel(Produto produto, double quantidade)
     {
         super(produto, quantidade);
     }

@@ -2,13 +2,14 @@ package stokos.model;
 
 import java.io.ObjectInputFilter.Config;
 import java.time.LocalDate;
-import stokos.Config;
+//import stokos.Config;
 
 public class LotePerecivel extends Lote 
 {
+    private static final long serialVersionUID = 1L;
     private final LocalDate dataDeValidade;
 
-    public LotePerecivel(Produto produto, int quantidadeInicial, LocalDate dataDeValidade)
+    public LotePerecivel(Produto produto, double quantidadeInicial, LocalDate dataDeValidade)
     {
         super(produto, quantidadeInicial);
         this.dataDeValidade = dataDeValidade;
@@ -38,7 +39,7 @@ public class LotePerecivel extends Lote
         {
             return false; // já venceu
         }
-        return diasAteVencer() <= Config.DIAS_PARA_ESTAR_PROXIMO_DO_VENCIMENTO;
+        return diasAteVencer() <= stokos.Config.DIAS_PARA_ESTAR_PROXIMO_DO_VENCIMENTO;
     }
 
     

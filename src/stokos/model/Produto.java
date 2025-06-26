@@ -116,7 +116,7 @@ public class Produto implements Serializable
   }
 
   // Outros métodos
-  public void registrarVenda(int quantidadeVendida)
+  public void registrarVenda(double quantidadeVendida)
   {
     if (quantidadeVendida <= 0) {
       throw new IllegalArgumentException("Quantidade vendida deve ser maior que zero.");
@@ -129,7 +129,7 @@ public class Produto implements Serializable
     return this.quantidadeDescartada;
   }
 
-  public void registrarDescarte(int quantidade)
+  public void registrarDescarte(double quantidade)
   {
     if (quantidade <= 0)
     {

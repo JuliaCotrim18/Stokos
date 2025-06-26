@@ -4,19 +4,25 @@ import java.io.Serializable;
 
 public abstract class Lote implements Serializable
 {
+    private static final long serialVersionUID = 1L;
     private final Produto produto;
-    private int quantidade;
+    private double quantidade;
     private final int id;
+    private String fornecedor;
+    private double custoDoLote;
 
     static int quantidadeDeLotes = 0;
 
     // construtor
-    public Lote(Produto produto, int quantidade)
+    public Lote(Produto produto, double quantidade)
     {
         this.id = ++quantidadeDeLotes;
 
         this.produto = produto;
         this.quantidade = quantidade;
+
+        this.fornecedor = "Não informado";
+        this.custoDoLote = 0.0;
 
     }
    
@@ -26,7 +32,7 @@ public abstract class Lote implements Serializable
     {
         return produto;
     }
-    public int getQuantidade()
+    public double getQuantidade()
     {
         return quantidade;
     }
@@ -36,10 +42,31 @@ public abstract class Lote implements Serializable
         return this.id;
     }
 
+    public String getFornecedor()
+    {
+        return fornecedor;
+    }
+
+    public double getCustoDoLote()
+    {
+        return custoDoLote;
+    }
+
+    // setters
+    public void setFornecedor(String fornecedor)
+    {
+        this.fornecedor = fornecedor;
+    }
+
+    public void setCustoDoLote(double custoDoLote)
+    {
+        this.custoDoLote = custoDoLote;
+    }
+
 
     public abstract boolean loteVencido();
 
-    public void removeQuantidade(int quantidade)
+    public void removeQuantidade(double quantidade)
     {
         if (quantidade <= 0) 
         {

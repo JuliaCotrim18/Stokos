@@ -58,9 +58,9 @@ public class Estoque implements Serializable // Serializable porque vamos serial
         listaDeLotes.removeIf(lote -> lote.getQuantidade() == 0);
     }
 
-    public int getQuantidadeDisponivel(String codigoDeBarra)
+    public double getQuantidadeDisponivel(String codigoDeBarra)
     {
-        int quantidadeTotal = 0;
+        double quantidadeTotal = 0;
         for (Lote lote : this.listaDeLotes)
         {
             if (lote.getProduto().getCodigoDeBarras().equals(codigoDeBarra))
@@ -73,7 +73,7 @@ public class Estoque implements Serializable // Serializable porque vamos serial
 
     }
 
-    public void registrarVenda(String codigoDeBarras, int quantidadeParaRemover) throws ProdutoNaoCadastradoException, QuantidadeInsuficienteException
+    public void registrarVenda(String codigoDeBarras, double quantidadeParaRemover) throws ProdutoNaoCadastradoException, QuantidadeInsuficienteException
     {
         Produto produto = catalogo.buscarProduto(codigoDeBarras);
 

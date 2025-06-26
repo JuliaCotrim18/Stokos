@@ -121,7 +121,7 @@ public class TelaRegistrarSaida extends JFrame {
             try {
         // Pega os dados e valida
         String codigoBarras = campoCodigoBarras.getText().trim();
-        int quantidade = Integer.parseInt(campoQuantidade.getText().trim());
+        double quantidade = Double.parseDouble(campoQuantidade.getText().trim().replace(',', '.'));
 
         if (codigoBarras.isEmpty() || quantidade <= 0) {
             // Informa sobre dados inválidos
