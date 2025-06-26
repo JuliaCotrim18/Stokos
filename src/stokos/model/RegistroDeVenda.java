@@ -2,7 +2,7 @@ package stokos.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import stokos.model.Produto; // Importação correta
+import stokos.model.Produto;
 
 /**
  * Representa uma única transação de venda, como um "recibo".
@@ -16,9 +16,16 @@ public class RegistroDeVenda implements Serializable {
     private final double quantidadeVendida;
     private final double precoUnitarioNaVenda;
     private final double custoTotalDaVenda;
+    private final double lucroDaVenda; // Armazena o lucro já calculado
     private final LocalDate dataDaVenda;
 
-    // O construtor está correto, o erro era pelo nome do arquivo
+    /**
+     * Construtor do RegistroDeVenda.
+     * É aqui que o polimorfismo acontece.
+     * @param produto O produto vendido (pode ser Comum ou ComImposto).
+     * @param quantidade A quantidade vendida na transação.
+     * @param custoTotal O custo agregado dos itens retirados dos lotes.
+     */
     public RegistroDeVenda(Produto produto, double quantidade, double custoTotal) {
         this.codigoDeBarrasProduto = produto.getCodigoDeBarras();
         this.nomeDoProduto = produto.getNomeDoProduto();
@@ -26,13 +33,23 @@ public class RegistroDeVenda implements Serializable {
         this.quantidadeVendida = quantidade;
         this.custoTotalDaVenda = custoTotal;
         this.dataDaVenda = LocalDate.now();
+        
+        // --- A MÁGICA DO POLIMORFISMO ---
+        // Chamamos o método calcularLucro() do objeto 'produto'.
+        // O Java automaticamente executa a versão correta do método,
+        // dependendo se o objeto é um ProdutoComum ou um ProdutoComImposto.
+        // A classe RegistroDeVenda não precisa de saber a diferença.
+        this.lucroDaVenda = produto.calcularLucro(quantidade, this.precoUnitarioNaVenda, this.custoTotalDaVenda);
     }
 
+    /**
+     * Retorna o lucro líquido desta venda, que já foi calculado e armazenado.
+     */
     public double getLucroDaVenda() {
-        double receitaTotal = this.precoUnitarioNaVenda * this.quantidadeVendida;
-        return receitaTotal - this.custoTotalDaVenda;
+        return this.lucroDaVenda;
     }
-
+    
+    // Getters existentes para outros atributos
     public String getCodigoDeBarrasProduto() { return codigoDeBarrasProduto; }
     public double getQuantidadeVendida() { return quantidadeVendida; }
 }
