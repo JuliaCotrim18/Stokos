@@ -116,7 +116,7 @@ public class TelaAvisos extends JFrame
         double estoqueMinimo = produto.getEstoqueMinimo();
         if (estoqueMinimo > 0) {
             // Agora a variável 'estoque' existe e pode ser usada aqui
-            int quantidadeAtual = estoque.getQuantidadeDisponivel(produto.getCodigoDeBarras());
+            double quantidadeAtual = estoque.getQuantidadeDisponivel(produto.getCodigoDeBarras());
             if (quantidadeAtual <= estoqueMinimo) {
                 listModel.addElement("ESTOQUE: O produto '" + produto.getNomeDoProduto() + "' está com estoque baixo (" + quantidadeAtual + " / " + estoqueMinimo + " " + produto.getGrandeza().toString().toLowerCase() + ").");
             }

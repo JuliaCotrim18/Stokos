@@ -85,7 +85,7 @@ public class TelaPrincipal extends JFrame {
         // Adiciona a ação para o botão de Relatórios
         botaoRelatorios.addActionListener(e -> 
         {
-            new TelaRelatorio().setVisible(true);
+            new TelaRelatorios().setVisible(true);
             this.dispose();
         }); 
         

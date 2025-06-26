@@ -10,6 +10,7 @@ public abstract class Lote implements Serializable
     private final int id;
     private String fornecedor;
     private double custoDoLote;
+    private final double quantidadeInicial;
 
     static int quantidadeDeLotes = 0;
 
@@ -23,6 +24,8 @@ public abstract class Lote implements Serializable
 
         this.fornecedor = "Não informado";
         this.custoDoLote = 0.0;
+
+        this.quantidadeInicial = quantidade;
 
     }
    
@@ -50,6 +53,11 @@ public abstract class Lote implements Serializable
     public double getCustoDoLote()
     {
         return custoDoLote;
+    }
+
+    public double getQuantidadeInicial()
+    {
+        return this.quantidadeInicial;
     }
 
     // setters

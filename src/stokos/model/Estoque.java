@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+import stokos.model.RegistroDeVenda;
 
 import stokos.exception.*;
 
@@ -73,7 +74,7 @@ public class Estoque implements Serializable // Serializable porque vamos serial
 
     }
 
-    public void registrarVenda(String codigoDeBarras, double quantidadeParaRemover) throws ProdutoNaoCadastradoException, QuantidadeInsuficienteException
+    public void registrarVenda(String codigoDeBarras, double quantidadeParaRemover, HistoricoDeVendas historico) throws ProdutoNaoCadastradoException, QuantidadeInsuficienteException
     {
         Produto produto = catalogo.buscarProduto(codigoDeBarras);
 
@@ -113,17 +114,25 @@ public class Estoque implements Serializable // Serializable porque vamos serial
                 });
             }
         }
+        double custoTotalDaVenda = 0.0;
 
         // 3. O resto da lógica para dar baixa nos lotes permanece igual
-        int quantidadeRestante = quantidadeParaRemover;
+        double quantidadeRestante = quantidadeParaRemover;
         for (Lote lote : lotesDoProduto) {
             if (quantidadeRestante <= 0) break;
 
-            int qtdNoLote = lote.getQuantidade();
-            if (qtdNoLote >= quantidadeRestante) {
+            double qtdNoLote = lote.getQuantidade();
+            double custoUnitarioDoLote = lote.getCustoDoLote() / lote.getQuantidadeInicial();
+
+            if (qtdNoLote >= quantidadeRestante) 
+            {
+                custoTotalDaVenda += quantidadeRestante * custoUnitarioDoLote;
                 lote.removeQuantidade(quantidadeRestante);
                 quantidadeRestante = 0;
-            } else {
+            } 
+            else 
+            {
+                custoTotalDaVenda += qtdNoLote * custoUnitarioDoLote;
                 lote.removeQuantidade(qtdNoLote);
                 quantidadeRestante -= qtdNoLote;
             }
@@ -134,6 +143,10 @@ public class Estoque implements Serializable // Serializable porque vamos serial
         
         // Limpa os lotes que ficaram com quantidade 0
         removerLotesVazios();
+
+        // registra a venda
+        RegistroDeVenda registro = new RegistroDeVenda(produto, quantidadeParaRemover, custoTotalDaVenda);
+        historico.adicionarRegistro(registro);
 
 
 

@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import stokos.AppContext;
 import stokos.model.Estoque;
 import stokos.exception.*;
+import stokos.model.HistoricoDeVendas;
 
 public class TelaRegistrarSaida extends JFrame {
 
@@ -129,10 +130,13 @@ public class TelaRegistrarSaida extends JFrame {
             return;
         }
 
-        Estoque estoque = AppContext.getInstance().getDados().estoque;
+        AppContext app = AppContext.getInstance();
+
+        Estoque estoque = app.getDados().estoque;
+        HistoricoDeVendas historico = app.getDados().historicoDeVendas;
         
         // Chama o método correto: registrarVenda
-        estoque.registrarVenda(codigoBarras, quantidade);
+        estoque.registrarVenda(codigoBarras, quantidade, historico);
 
         // Dá feedback de sucesso para o usuário!
         String acao = (e.getSource() == botaoRegistrarVenda) ? "Venda" : "Descarte";

@@ -9,6 +9,7 @@ public class TelaEstoque extends JFrame {
     private JButton botaoVoltar;
     private JButton botaoAdicionarLote;
     private JButton botaoRegistrarSaida;
+    private JButton botaoVisualizarEstoque;
 
     // --- Construtor ---
     public TelaEstoque() {
@@ -57,41 +58,48 @@ public class TelaEstoque extends JFrame {
      * @return JPanel configurado.
      */
     private JPanel criarPainelCentral() {
-        JPanel painelCentral = new JPanel();
-        // Define o layout como uma "caixa" vertical
-        painelCentral.setLayout(new BoxLayout(painelCentral, BoxLayout.Y_AXIS));
+    JPanel painelCentral = new JPanel();
+    painelCentral.setLayout(new BoxLayout(painelCentral, BoxLayout.Y_AXIS));
 
-        // Cria os botões de ação
-        botaoAdicionarLote = new JButton("Adicionar Novo Lote");
+    // --- CORREÇÃO ESTÁ AQUI ---
+    // Cria os três botões ANTES de usar qualquer um deles.
+    botaoAdicionarLote = new JButton("Adicionar Novo Lote");
+    botaoRegistrarSaida = new JButton("Registrar Saída de Produto");
+    botaoVisualizarEstoque = new JButton("Visualizar Lotes no Estoque"); // O botão é criado aqui
 
-        botaoAdicionarLote.addActionListener(e -> 
-        {
-            new TelaAdicionarLote().setVisible(true);
-            this.dispose();
-        });
+    // Agora, adiciona os Listeners para os botões que já existem.
+    botaoAdicionarLote.addActionListener(e -> {
+        new TelaAdicionarLote().setVisible(true);
+        this.dispose();
+    });
 
+    botaoRegistrarSaida.addActionListener(e -> {
+        new TelaRegistrarSaida().setVisible(true);
+        this.dispose();
+    });
 
-        botaoRegistrarSaida = new JButton("Registrar Saída de Produto");
-        botaoRegistrarSaida.addActionListener(e -> 
-        {
-            new TelaRegistrarSaida().setVisible(true);
-            this.dispose();
-        });
+    botaoVisualizarEstoque.addActionListener(e -> {
+        new TelaVisualizarEstoque().setVisible(true);
+        this.dispose();
+    });
 
-        // Padroniza o alinhamento e o tamanho dos botões
-        configurarBotao(botaoAdicionarLote);
-        configurarBotao(botaoRegistrarSaida);
+    // Padroniza o alinhamento e o tamanho dos botões
+    configurarBotao(botaoAdicionarLote);
+    configurarBotao(botaoRegistrarSaida);
+    configurarBotao(botaoVisualizarEstoque);
 
-        // --- Mágica da Centralização ---
-        painelCentral.add(Box.createVerticalGlue()); // Mola superior
-        painelCentral.add(botaoAdicionarLote);
-        painelCentral.add(Box.createRigidArea(new Dimension(0, 20))); // Espaço de 20px entre os botões
-        painelCentral.add(botaoRegistrarSaida);
-        painelCentral.add(Box.createVerticalGlue()); // Mola inferior
+    // Adiciona os botões ao painel
+    painelCentral.add(Box.createVerticalGlue());
+    painelCentral.add(botaoAdicionarLote);
+    painelCentral.add(Box.createRigidArea(new Dimension(0, 20)));
+    painelCentral.add(botaoRegistrarSaida);
+    painelCentral.add(Box.createRigidArea(new Dimension(0, 20)));
+    painelCentral.add(botaoVisualizarEstoque);
+    painelCentral.add(Box.createVerticalGlue());
 
-        return painelCentral;
-    }
-
+    return painelCentral;
+}
+    
     /**
      * Método auxiliar para aplicar um estilo padrão aos botões de ação.
      * @param botao O botão a ser configurado.

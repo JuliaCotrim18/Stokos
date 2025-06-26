@@ -4,6 +4,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import stokos.AppContext;
+import stokos.model.CatalogoDeProdutos;
+import stokos.model.Estoque;
+import stokos.model.HistoricoDeVendas;
+import stokos.model.Produto;
+
 public class TelaRelatorios extends JFrame {
 
     // --- Atributos de Componentes da UI ---
@@ -18,11 +24,12 @@ public class TelaRelatorios extends JFrame {
 
         configurarJanela();
         inicializarComponentes();
+        // A chamada para carregar os dados agora é feita apenas uma vez, dentro de criarPainelCentral()
     }
 
     // --- Métodos de Configuração ---
     private void configurarJanela() {
-        this.setSize(800, 600); // Relatórios geralmente precisam de mais espaço
+        this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout(10, 10));
@@ -38,32 +45,27 @@ public class TelaRelatorios extends JFrame {
     private JPanel criarPainelNorte() {
         JPanel painelNorte = new JPanel(new FlowLayout(FlowLayout.LEFT));
         botaoVoltar = new JButton("Voltar");
+        // Adicionando a ação para o botão voltar, que estava faltando
+        botaoVoltar.addActionListener(e -> {
+            new TelaPrincipal().setVisible(true);
+            this.dispose();
+        });
         painelNorte.add(botaoVoltar);
         return painelNorte;
     }
 
-    /**
-     * Cria o painel central que contém a JTable com os dados do relatório.
-     */
     private JScrollPane criarPainelCentral() {
-        // 1. Definir os nomes das colunas
         String[] colunas = {"Nome do Produto", "Qtd. Disponível", "Qtd. Vendida", "Preço Unit.", "Lucro Total Est."};
-
-        // 2. Criar o TableModel com as colunas definidas e 0 linhas iniciais
         tableModel = new DefaultTableModel(colunas, 0);
-
-        // 3. Criar a JTable a partir do nosso modelo
         tabelaRelatorio = new JTable(tableModel);
         
-        // Configurações visuais da tabela
-        tabelaRelatorio.setFillsViewportHeight(true); // Faz a tabela ocupar toda a altura do scrollpane
-        tabelaRelatorio.setRowHeight(25); // Aumenta a altura da linha para melhor leitura
+        tabelaRelatorio.setFillsViewportHeight(true);
+        tabelaRelatorio.setRowHeight(25);
         tabelaRelatorio.setFont(new Font("Arial", Font.PLAIN, 12));
         
-        // Adicionar dados de exemplo ao modelo
-        carregarDadosExemplo();
+        // Carrega os dados reais aqui, depois que a tabela já foi criada
+        carregarDadosDoRelatorio();
 
-        // 4. Colocar a JTable dentro de um JScrollPane
         JScrollPane scrollPane = new JScrollPane(tabelaRelatorio);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Relatório Geral de Produtos"));
 
@@ -78,20 +80,28 @@ public class TelaRelatorios extends JFrame {
     }
 
     /**
-     * Método de exemplo para popular a tabela. No futuro, os dados virão
-     * da análise do nosso sistema.
+     * Carrega os dados reais do sistema para preencher a tabela.
      */
-    private void carregarDadosExemplo() {
-        // Criamos um array de Object para cada linha
-        Object[] linha1 = {"Leite Integral 1L", 50, 120, 4.50, 540.00};
-        Object[] linha2 = {"Pão Francês (un)", 30, 850, 0.50, 425.00};
-        Object[] linha3 = {"Refrigerante 2L", 15, 80, 8.00, 640.00};
-        Object[] linha4 = {"Carne Moída (kg)", 5.5, 40.2, 35.00, 1407.00};
+    private void carregarDadosDoRelatorio() {
+        tableModel.setRowCount(0); // Limpa quaisquer dados antigos
 
-        // Adicionamos as linhas ao modelo
-        tableModel.addRow(linha1);
-        tableModel.addRow(linha2);
-        tableModel.addRow(linha3);
-        tableModel.addRow(linha4);
+        AppContext app = AppContext.getInstance();
+        CatalogoDeProdutos catalogo = app.getDados().catalogo;
+        Estoque estoque = app.getDados().estoque;
+        HistoricoDeVendas historico = app.getDados().historicoDeVendas;
+
+        for (Produto produto : catalogo.getListaDeProdutos()) {
+            String codigo = produto.getCodigoDeBarras();
+
+            Object[] linha = {
+                produto.getNomeDoProduto(),
+                estoque.getQuantidadeDisponivel(codigo),
+                historico.getQuantidadeTotalVendida(codigo),
+                produto.getPrecoUnitario(),
+                String.format("%.2f", historico.getLucroTotalPorProduto(codigo))
+            };
+
+            tableModel.addRow(linha);
+        }
     }
 }

@@ -2,6 +2,9 @@ package stokos;
 
 import stokos.service.*;
 import stokos.persistence.*;
+
+import java.io.ObjectInputFilter.Config;
+
 import stokos.model.*;
 
 public class AppContext {
@@ -14,7 +17,7 @@ public class AppContext {
 
     private AppContext() {
         this.servicoDeAutenticacao = new ServicoDeAutenticacao();
-        this.servicoDeArmazenamento = new ArmazenamentoEmArquivo(Config.CAMINHO_ARMAZENAMENTO);
+        this.servicoDeArmazenamento = new ArmazenamentoEmArquivo(stokos.Config.CAMINHO_ARMAZENAMENTO);
         carregarDados();
     }
 
@@ -22,17 +25,20 @@ public class AppContext {
         return instance;
     }
 
-    public void carregarDados() {
+    public void carregarDados() 
+    {
         try {
             this.dados = servicoDeArmazenamento.carregarDados();
-            if (this.dados.catalogo == null) this.dados.catalogo = new CatalogoDeProdutos();
-            if (this.dados.estoque == null) this.dados.estoque = new Estoque(this.dados.catalogo);
+            if (this.dados == null) this.dados = new DadosDoSistema(); // Se o arquivo não existe
         } catch (Exception e) {
             System.err.println("Falha ao carregar dados, iniciando com sistema novo.");
             this.dados = new DadosDoSistema();
-            if (this.dados.catalogo == null) this.dados.catalogo = new CatalogoDeProdutos();
-            if (this.dados.estoque == null) this.dados.estoque = new Estoque(this.dados.catalogo);
         }
+        
+        // Garante que os componentes nunca são nulos após carregar
+        if (this.dados.catalogo == null) this.dados.catalogo = new CatalogoDeProdutos();
+        if (this.dados.estoque == null) this.dados.estoque = new Estoque(this.dados.catalogo);
+        if (this.dados.historicoDeVendas == null) this.dados.historicoDeVendas = new HistoricoDeVendas();
     }
 
     public void salvarDados() {
