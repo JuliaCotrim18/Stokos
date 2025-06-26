@@ -9,6 +9,9 @@ import java.io.Serializable;
 public class Produto implements Serializable
 {
   // Atributos
+  private static final long serialVersionUID = 1L;
+
+
   private int id; // código para ser utilizado no próprio sistema, o ID é único para cada produto e é gerado automaticamente quando um novo produto é criado
   private String codigoDeBarras; // código de barras do produto
   private String categoria; // categoria do produto "Laticínios", "Hortifruti", "Padaria", etc.
@@ -147,6 +150,14 @@ public class Produto implements Serializable
     }
 
     this.estoqueMinimo = estoqueMinimo;
+  }
+
+  public static void setContadorProdutos(int ultimoId)
+  {
+    if (ultimoId > contadorProdutos)
+    {
+      contadorProdutos = ultimoId;
+    }
   }
 
 

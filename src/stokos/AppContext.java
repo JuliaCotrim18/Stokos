@@ -39,6 +39,9 @@ public class AppContext {
         if (this.dados.catalogo == null) this.dados.catalogo = new CatalogoDeProdutos();
         if (this.dados.estoque == null) this.dados.estoque = new Estoque(this.dados.catalogo);
         if (this.dados.historicoDeVendas == null) this.dados.historicoDeVendas = new HistoricoDeVendas();
+
+        sincronizarContadorDeLotes();
+        sincronizarContadorProdutos();
     }
 
     public void salvarDados() {
@@ -47,6 +50,39 @@ public class AppContext {
         } catch (Exception e) {
             System.err.println("Falha crítica ao salvar os dados.");
         }
+    }
+    private void sincronizarContadorDeLotes()
+    {
+        int maxId = 0;
+        if (this.dados.estoque != null && this.dados.estoque.getLotes() != null)
+        {
+            for (Lote lote : this.dados.estoque.getLotes())
+            {
+                if (lote.getId() > maxId)
+                {
+                    maxId = lote.getId();
+
+                }
+            }
+        }
+        Lote.setContadorLotes(maxId);
+    }
+
+    private void sincronizarContadorProdutos()
+    {
+        int maxId = 0;
+        if (this.dados.catalogo != null && this.dados.catalogo.getListaDeProdutos() != null)
+        {
+            for (Produto produto : this.dados.catalogo.getListaDeProdutos())
+            {
+                if (produto.getId() > maxId)
+                {
+                    maxId = produto.getId();
+                }
+            }
+
+        }
+        Produto.setContadorProdutos(maxId);
     }
 
     // Getters e Setters

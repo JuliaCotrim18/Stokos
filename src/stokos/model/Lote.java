@@ -89,4 +89,11 @@ public abstract class Lote implements Serializable
 
     public abstract boolean estaPertoDeVencer();
     
+    public static void setContadorLotes(int ultimoId)
+    {
+        if (ultimoId > quantidadeDeLotes)
+        {
+            quantidadeDeLotes = ultimoId;
+        }
+    }
 }
