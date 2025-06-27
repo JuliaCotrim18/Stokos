@@ -3,6 +3,7 @@ package stokos.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -109,6 +110,9 @@ public class TelaPrincipal extends JFrame {
         painelDeBotoes.add(botaoEstoque);
         painelDeBotoes.add(Box.createVerticalGlue()); // Espaço flexível.
         painelDeBotoes.add(botaoSair);
+
+        botaoSair.setBackground(new Color(220, 53, 69)); // Um tom de vermelho escuro (R, G, B)
+        botaoSair.setForeground(Color.WHITE); // Texto branco para melhor contraste
 
         // Adiciona o painel de botões a um JScrollPane para o caso de a janela ser pequena.
         JScrollPane scrollPane = new JScrollPane(painelDeBotoes);
