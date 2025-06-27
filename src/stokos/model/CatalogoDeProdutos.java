@@ -134,6 +134,25 @@ public class CatalogoDeProdutos implements Serializable {
     }
 
     /**
+     * Busca e retorna um produto do catálogo pelo seu ID.
+     * Este método é útil para operações que necessitam identificar produtos
+     * de forma única, como atualizações ou exclusões.
+     *
+     * @param id O ID do produto a ser procurado.
+     * @return O objeto `Produto` correspondente, se for encontrado. Caso contrário, retorna `null`.
+     */
+    // Este método é uma sobrecarga do método buscarProduto, permitindo a busca por ID
+
+    public Produto buscarProduto(int id) {
+        for (Produto produto : listaDeProdutos) {
+            if (produto.getId() == id) {
+                return produto;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Retorna a lista completa de produtos cadastrados.
      * Este método é utilizado principalmente por telas de relatório e visualização
      * que precisam exibir todos os produtos do catálogo.
