@@ -1,6 +1,9 @@
 package stokos;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+
 import stokos.gui.TelaLogin;
 
 /**
@@ -16,6 +19,19 @@ public class Main {
      * @param args Argumentos da linha de comando (não utilizados).
      */
     public static void main(String[] args) {
+
+        try {
+            // Define o Look and Feel Nimbus
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // Se o Nimbus não estiver disponível, o programa continuará com o padrão.
+            e.printStackTrace();
+        }
 
         // 1. OBTENÇÃO DO CONTEXTO DA APLICAÇÃO
         // Utiliza o padrão Singleton para obter a instância única do AppContext.
