@@ -1,30 +1,46 @@
-// ServicoDeArmazenamento.java
-
-/**
- * Define o contrato para qualquer classe que queira
- * salvar e carregar o estado do estoque do sistema.
- * no nosso caso, temos apenas a opção de armazenar em um arquivo
- * mas no futuro podemos ter outras opções, como banco de dados, por isso a interface.
- */
-
 package stokos.service;
 
 import stokos.model.DadosDoSistema;
 
+/**
+ * A interface `ServicoDeArmazenamento` define um "contrato" para qualquer classe
+ * que deseje fornecer um mecanismo de persistência (salvar e carregar) para os
+ * dados do sistema.
+ *
+ * CONCEITO DE DESIGN: PROGRAMAÇÃO VOLTADA A INTERFACES
+ * Ao criar esta interface, o resto do sistema (como o `AppContext`) não precisa
+ * saber *como* os dados são salvos (em um arquivo, em um banco de dados, na nuvem),
+ * mas apenas *que* existe um serviço capaz de executar as ações `salvarDados` e
+ * `carregarDados`.
+ *
+ * Vantagens:
+ * - Desacoplamento: A lógica de negócio fica separada da lógica de persistência.
+ * - Flexibilidade: Se no futuro quisermos trocar o armazenamento de arquivos por
+ * um banco de dados, precisaríamos apenas criar uma nova classe
+ * (ex: `ArmazenamentoEmBancoDeDados`) que implementa esta mesma interface,
+ * sem a necessidade de alterar o resto do sistema.
+ */
 public interface ServicoDeArmazenamento {
 
     /**
-     * Salva o estado atual do estoque.
-     * @param estoque O objeto Estoque a ser salvo.
-     * @throws Exception Se ocorrer um erro durante a gravação.
+     * Define o método para salvar o estado atual dos dados da aplicação.
+     * Qualquer classe que implementar esta interface é obrigada a fornecer uma
+     * implementação para este método.
+     *
+     * @param dados O objeto `DadosDoSistema` que contém tudo a ser salvo.
+     * @throws Exception Se ocorrer um erro durante o processo de gravação.
      */
-    void salvarDados(DadosDoSistema dados) throws Exception; // todo serviço de armazenamento deve salvar nosso estoque
+    void salvarDados(DadosDoSistema dados) throws Exception;
 
     /**
-     * Carrega o estado do estoque.
-     * @return O objeto Estoque carregado. Se não houver estado salvo,
-     * pode retornar um novo estoque vazio.
-     * @throws Exception Se ocorrer um erro durante a leitura.
+     * Define o método para carregar o estado dos dados da aplicação.
+     * Qualquer classe que implementar esta interface é obrigada a fornecer uma
+     * implementação para este método.
+     *
+     * @return O objeto `DadosDoSistema` carregado. Se nenhum dado salvo for
+     * encontrado, a implementação pode retornar `null` ou um novo objeto
+     * de dados vazio.
+     * @throws Exception Se ocorrer um erro durante o processo de leitura.
      */
-    DadosDoSistema carregarDados() throws Exception; // e também deve carregar o DadosDoSistema salvo
+    DadosDoSistema carregarDados() throws Exception;
 }

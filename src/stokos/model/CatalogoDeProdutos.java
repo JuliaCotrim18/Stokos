@@ -1,6 +1,7 @@
 package stokos.model;
 
 import stokos.exception.ProdutoNaoCadastradoException;
+import stokos.exception.LoteNaoVazioException;
 import stokos.exception.ProdutoJaCadastradoException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
  * as sessões da aplicação.
  */
 public class CatalogoDeProdutos implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     // A estrutura de dados `ArrayList` é usada para armazenar a coleção de produtos.
     // Ela é privada para garantir o encapsulamento.
@@ -85,7 +88,15 @@ public class CatalogoDeProdutos implements Serializable {
      * @throws ProdutoNaoCadastradoException se nenhum produto for encontrado com o
      * código de barras fornecido.
      */
-    public void removerProduto(String codigoDeBarras) throws ProdutoNaoCadastradoException {
+    public void removerProduto(String codigoDeBarras, Estoque estoque) throws ProdutoNaoCadastradoException, LoteNaoVazioException {
+
+        // Antes de tudo, verifica se não há lotes do produto no sistema
+        double quantidadeDisponivelNoEstoque = estoque.getQuantidadeDisponivel(codigoDeBarras);
+        if (quantidadeDisponivelNoEstoque > 0)
+        {
+            throw new LoteNaoVazioException("Ainda há lotes do produto no estoque!");
+        }
+        
         // Primeiro, é necessário encontrar a referência do objeto a ser removido.
         Produto produtoParaRemover = null;
         for (Produto p : listaDeProdutos) {

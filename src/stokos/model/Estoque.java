@@ -31,6 +31,8 @@ import stokos.exception.*;
  */
 public class Estoque implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     // Atributo para armazenar a coleção de lotes.
     // O uso de ArrayList permite uma coleção dinâmica que pode crescer ou encolher.
     private ArrayList<Lote> listaDeLotes;

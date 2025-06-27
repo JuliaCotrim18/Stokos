@@ -21,6 +21,8 @@ import java.io.Serializable;
  */
 public class Usuario implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     // Atributo para o login do usuário (identificador único).
     private String nomeDeUsuario;
     // Atributo para a senha de autenticação.

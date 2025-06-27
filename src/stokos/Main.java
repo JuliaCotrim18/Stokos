@@ -1,43 +1,41 @@
-// Main.java (Refatorada com AppContext)
 package stokos;
-
-
 
 import javax.swing.SwingUtilities;
 import stokos.gui.TelaLogin;
 
 /**
  * Ponto de entrada da aplicação Stokos.
- * A única responsabilidade desta classe é iniciar o contexto da aplicação
- * e a interface gráfica inicial.
+ * A responsabilidade desta classe é unicamente iniciar os processos essenciais:
+ * o contexto da aplicação e a interface gráfica.
  */
 public class Main {
 
+    /**
+     * Método principal que a JVM executa para iniciar o programa.
+     *
+     * @param args Argumentos da linha de comando (não utilizados).
+     */
     public static void main(String[] args) {
 
-        // --- PASSO 1: Obter/Iniciar o contexto global da aplicação ---
-        // Esta única linha é agora o coração da inicialização.
-        // No momento em que ela é chamada pela primeira vez, o Java executa toda
-        // a lógica que colocamos no construtor privado do AppContext: os serviços
-        // são criados e o método carregarDados() é chamado automaticamente.
+        // 1. OBTENÇÃO DO CONTEXTO DA APLICAÇÃO
+        // Utiliza o padrão Singleton para obter a instância única do AppContext.
+        // A primeira chamada a `getInstance()` carrega os dados e inicializa os serviços.
         final AppContext app = AppContext.getInstance();
 
-
-        // --- PASSO 2: Configurar o Salvamento Automático ---
-        // A lógica de salvamento agora é delegada para o AppContext.
+        // 2. CONFIGURAÇÃO DO SALVAMENTO AUTOMÁTICO
+        // Registra um "Shutdown Hook": uma thread que é executada automaticamente
+        // antes de a aplicação fechar. Isto garante que os dados serão salvos.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Desligando o sistema...");
+            System.out.println("Desligando o sistema... salvando dados.");
             app.salvarDados();
             System.out.println("Dados salvos. Até logo!");
         }));
 
-
-        // --- PASSO 3: Iniciar a Interface Gráfica ---
-        // Inicia a GUI na thread de eventos do Swing para segurança.
+        // 3. INICIALIZAÇÃO DA INTERFACE GRÁFICA (GUI)
+        // `SwingUtilities.invokeLater` agenda a criação da GUI na Event Dispatch Thread (EDT).
+        // Esta é a forma correta e segura de iniciar aplicações Swing, evitando problemas de concorrência.
         SwingUtilities.invokeLater(() -> {
-            // A TelaLogin se tornou independente. Ela mesma pegará o que
-            // precisa do AppContext quando for necessário.
-            // Por isso, seu construtor agora é chamado sem argumentos.
+            // Cria e torna visível a tela de login inicial.
             new TelaLogin().setVisible(true);
         });
     }
