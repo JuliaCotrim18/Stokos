@@ -39,7 +39,7 @@ public class TelaAvisos extends JFrame {
      * Configura as propriedades principais da janela (JFrame).
      */
     private void configurarJanela() {
-        this.setSize(600, 450);
+        this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout(10, 10));

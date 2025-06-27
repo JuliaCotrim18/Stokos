@@ -45,7 +45,7 @@ public class TelaRegistrarSaida extends JFrame {
      * Configura as propriedades essenciais da janela (JFrame).
      */
     private void configurarJanela() {
-        this.setSize(550, 400);
+        this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout(10, 10));

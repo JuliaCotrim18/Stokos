@@ -38,7 +38,7 @@ public class TelaEstoque extends JFrame {
      * Configura as propriedades principais da janela (JFrame).
      */
     private void configurarJanela() {
-        this.setSize(500, 400); // Define o tamanho da janela.
+        this.setSize(800, 600); // Define o tamanho da janela.
         // Define que a aplicação não deve fechar ao clicar no "X", apenas esta janela.
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null); // Centraliza a janela na tela.

@@ -47,7 +47,7 @@ public class TelaPrincipal extends JFrame {
      * Configura as propriedades essenciais da janela (JFrame).
      */
     private void configurarJanela() {
-        this.setSize(450, 550);
+        this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null); // Centraliza a janela.
         this.getContentPane().setBackground(COR_FUNDO); // Define uma cor de fundo suave
