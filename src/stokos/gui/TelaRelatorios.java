@@ -74,8 +74,8 @@ public class TelaRelatorios extends JFrame {
      * @return Um JScrollPane contendo a JTable.
      */
     private JScrollPane criarPainelCentral() {
-        // Define os cabeçalhos das colunas do relatório.
-        String[] colunas = {"Nome do Produto", "Qtd. Disponível", "Qtd. Vendida", "Preço Unit.", "Lucro Total Est."};
+        // ALTERADO: Adicionada a coluna "Qtd. Descartada"
+        String[] colunas = {"Nome do Produto", "Qtd. Disponível", "Qtd. Vendida", "Qtd. Descartada", "Preço Unit.", "Lucro Total Est."};
         tableModel = new DefaultTableModel(colunas, 0);
         tabelaRelatorio = new JTable(tableModel);
 
@@ -83,7 +83,6 @@ public class TelaRelatorios extends JFrame {
         tabelaRelatorio.setRowHeight(25);
         tabelaRelatorio.setFont(new Font("Arial", Font.PLAIN, 12));
 
-        // Carrega os dados para preencher a tabela logo após sua criação.
         carregarDadosDoRelatorio();
 
         JScrollPane scrollPane = new JScrollPane(tabelaRelatorio);
@@ -145,6 +144,7 @@ public class TelaRelatorios extends JFrame {
                 produto.getNomeDoProduto(),
                 estoque.getQuantidadeDisponivel(codigo),
                 historico.getQuantidadeTotalVendida(codigo),
+                produto.getQuantidadeDescartada(),
                 produto.getPrecoUnitario(),
                 String.format("%.2f", historico.getLucroTotalPorProduto(codigo)) // Formata o lucro para duas casas decimais.
             };

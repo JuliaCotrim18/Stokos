@@ -1,8 +1,8 @@
 package stokos;
 
 import stokos.service.*;
-import stokos.gui.persistence.*;
 import stokos.model.*;
+import stokos.persistence.*;
 
 /**
  * A classe AppContext implementa o padrão de projeto Singleton.

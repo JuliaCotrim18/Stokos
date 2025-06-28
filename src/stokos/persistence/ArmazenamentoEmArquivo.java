@@ -1,4 +1,4 @@
-package stokos.gui.persistence;
+package stokos.persistence;
 
 import java.io.*;
 import stokos.model.DadosDoSistema;

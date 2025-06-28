@@ -1,6 +1,10 @@
 package stokos.gui;
 
 import javax.swing.*;
+
+import stokos.AppContext;
+import stokos.model.Cargo;
+
 import java.awt.*;
 
 /**
@@ -87,7 +91,8 @@ public class TelaEstoque extends JFrame {
 
         // Instancia os botões de ação.
         botaoAdicionarLote = new JButton("Adicionar Novo Lote");
-        botaoRegistrarSaida = new JButton("Registrar Saída de Produto");
+        botaoRegistrarSaida = new JButton("Registrar Saída de Produto (Venda)"); 
+        JButton botaoRegistrarDescarte = new JButton("Registrar Descarte de Produto"); 
         botaoVisualizarEstoque = new JButton("Visualizar Lotes no Estoque");
 
         // Associa as ações de clique a cada botão.
@@ -102,6 +107,11 @@ public class TelaEstoque extends JFrame {
             this.dispose();
         });
 
+        botaoRegistrarDescarte.addActionListener(e -> {
+            new TelaRegistrarDescarte().setVisible(true);
+            this.dispose();
+        });
+
         botaoVisualizarEstoque.addActionListener(e -> {
             new TelaVisualizarEstoque().setVisible(true);
             this.dispose();
@@ -110,7 +120,14 @@ public class TelaEstoque extends JFrame {
         // Aplica uma formatação padrão aos botões para manter a consistência visual.
         configurarBotao(botaoAdicionarLote);
         configurarBotao(botaoRegistrarSaida);
+        configurarBotao(botaoRegistrarDescarte);
         configurarBotao(botaoVisualizarEstoque);
+
+        //Controle de permissão para o descarte
+        if (AppContext.getInstance().getUsuarioLogado().getCargo() != Cargo.CEO) {
+            botaoRegistrarDescarte.setEnabled(false);
+        }
+
 
         // Adiciona os componentes ao painel, usando espaçamento para um layout limpo.
         painelCentral.add(Box.createVerticalGlue()); // Espaço flexível para centralizar verticalmente.
@@ -118,11 +135,15 @@ public class TelaEstoque extends JFrame {
         painelCentral.add(Box.createRigidArea(new Dimension(0, 20))); // Espaço fixo entre os botões.
         painelCentral.add(botaoRegistrarSaida);
         painelCentral.add(Box.createRigidArea(new Dimension(0, 20)));
+        painelCentral.add(botaoRegistrarDescarte); 
+        painelCentral.add(Box.createRigidArea(new Dimension(0, 20)));
         painelCentral.add(botaoVisualizarEstoque);
         painelCentral.add(Box.createVerticalGlue()); // Espaço flexível.
 
         return painelCentral;
     }
+
+
 
     /**
      * Método auxiliar para aplicar um estilo padrão e consistente aos botões de menu.

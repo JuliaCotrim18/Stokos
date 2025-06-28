@@ -200,4 +200,63 @@ public class Estoque implements Serializable {
         RegistroDeVenda registro = new RegistroDeVenda(produto, quantidadeParaRemover, custoTotalDaVenda);
         historico.adicionarRegistro(registro);
     }
+
+    /**
+     * Processa a baixa de uma determinada quantidade de um produto do estoque
+     * devido a descarte (perda, vencimento, avaria).
+     *
+     * @param codigoDeBarras O código do produto a ser descartado.
+     * @param quantidadeParaDescartar A quantidade a ser retirada do estoque.
+     * @throws ProdutoNaoCadastradoException Se o produto não for encontrado.
+     * @throws QuantidadeInsuficienteException Se a quantidade em estoque for menor que a solicitada.
+     */
+    public void registrarDescarte(String codigoDeBarras, double quantidadeParaDescartar)
+            throws ProdutoNaoCadastradoException, QuantidadeInsuficienteException {
+
+        // 1. Validar e buscar o produto no catálogo.
+        Produto produto = catalogo.buscarProduto(codigoDeBarras);
+        if (produto == null) {
+            throw new ProdutoNaoCadastradoException("Produto não cadastrado");
+        }
+        
+        // Validação de estoque antes de iniciar o processo de baixa
+        if (getQuantidadeDisponivel(codigoDeBarras) < quantidadeParaDescartar) {
+            throw new QuantidadeInsuficienteException("Quantidade em estoque insuficiente para o descarte: " + produto.getNomeDoProduto());
+        }
+
+        // 2. Filtrar e ordenar os lotes do produto (lógica idêntica à de venda)
+        List<Lote> lotesDoProduto = this.listaDeLotes.stream()
+                .filter(lote -> lote.getProduto().getCodigoDeBarras().equals(codigoDeBarras))
+                .collect(Collectors.toList());
+
+        if (!lotesDoProduto.isEmpty()) {
+            boolean ehPerecivel = lotesDoProduto.get(0) instanceof LotePerecivel;
+            if (ehPerecivel) {
+                // Estratégia FEFO (First-Expire, First-Out)
+                Collections.sort(lotesDoProduto, Comparator.comparing(lote -> ((LotePerecivel) lote).getDataDeValidade()));
+            } else {
+                // Estratégia FIFO (First-In, First-Out)
+                Collections.sort(lotesDoProduto, Comparator.comparingInt(Lote::getId));
+            }
+        }
+
+        // 3. Dar baixa da quantidade nos lotes ordenados.
+        double quantidadeRestante = quantidadeParaDescartar;
+        for (Lote lote : lotesDoProduto) {
+            if (quantidadeRestante <= 0) break;
+
+            double qtdNoLote = lote.getQuantidade();
+            if (qtdNoLote >= quantidadeRestante) {
+                lote.removeQuantidade(quantidadeRestante);
+                quantidadeRestante = 0;
+            } else {
+                lote.removeQuantidade(qtdNoLote);
+                quantidadeRestante -= qtdNoLote;
+            }
+        }
+
+        // 4. Atualizar o registro de descarte no produto e limpar lotes vazios.
+        produto.registrarDescarte(quantidadeParaDescartar);
+        removerLotesVazios();
+    }
 }
