@@ -32,6 +32,13 @@ public final class Config {
     public static final String CAMINHO_ARMAZENAMENTO = "./stokos_dados.stk";
 
     /**
+     * Define o caminho e o nome do arquivo de dados de teste.
+     * Usado para testes unitários e de integração, permitindo que os testes
+     * não interfiram nos dados reais da aplicação.
+     */
+    public static final String CAMINHO_TESTE_ARMAZENAMENTO = "./stokos_dados_teste.stk";
+
+    /**
      * Define o número de dias de antecedência para um lote ser considerado
      * "próximo do vencimento". Usado na lógica de alertas.
      */

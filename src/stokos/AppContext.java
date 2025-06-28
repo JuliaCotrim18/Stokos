@@ -14,9 +14,7 @@ import stokos.persistence.*;
  * com a camada de dados (model) e de serviços (service).
  */
 public class AppContext {
-    // A instância única é criada no momento em que a classe é carregada pela JVM.
-    // 'private static final' garante que ela seja única e imutável.
-    private static final AppContext instance = new AppContext();
+    private static AppContext instance;
 
     // Atributos que representam os serviços e dados globais da aplicação.
     private ServicoDeArmazenamento servicoDeArmazenamento;
@@ -24,25 +22,30 @@ public class AppContext {
     private DadosDoSistema dados;
     private Usuario usuarioLogado; // Guarda o usuário da sessão atual.
 
+
+
     /**
-     * Construtor privado para impedir a criação de novas instâncias da classe.
-     * Esta é a característica fundamental do padrão Singleton.
-     * O construtor é chamado apenas uma vez, quando a 'instance' é criada.
+     * Construtor privado para garantir que a classe seja Singleton.
+     * Inicializa os serviços de autenticação e armazenamento, e carrega os dados do sistema.
+     * @param caminhoArquivo O caminho do arquivo onde os dados serão armazenados.
      */
-    private AppContext() {
+    public AppContext(String caminhoArquivo) {
         this.servicoDeAutenticacao = new ServicoDeAutenticacao();
-        this.servicoDeArmazenamento = new ArmazenamentoEmArquivo(stokos.Config.CAMINHO_ARMAZENAMENTO);
-        // Carrega os dados persistidos logo na inicialização do contexto.
+        // Usa o caminho fornecido para criar o serviço de armazenamento
+        this.servicoDeArmazenamento = new ArmazenamentoEmArquivo(caminhoArquivo);
         carregarDados();
     }
 
     /**
-     * Método público e estático que fornece o ponto de acesso global à
-     * instância única da classe.
-     *
-     * @return A única instância de AppContext.
+     * Método Singleton para a aplicação principal.
+     * Garante que a aplicação sempre use o mesmo contexto com o arquivo de dados padrão.
+     * @return A instância única de AppContext para a aplicação.
      */
     public static AppContext getInstance() {
+        if (instance == null) {
+            // Usa o caminho de armazenamento padrão da classe Config
+            instance = new AppContext(Config.CAMINHO_ARMAZENAMENTO);
+        }
         return instance;
     }
 
