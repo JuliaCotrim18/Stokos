@@ -126,15 +126,18 @@ public class TelaAvisos extends JFrame {
             }
         }
 
-        // 2. VERIFICAÇÃO DE ESTOQUE MÍNIMO
+        // 2. VERIFICAÇÃO DE ESTOQUE MÍNIMO E ZERADO
         for (Produto produto : catalogo.getListaDeProdutos()) {
             double estoqueMinimo = produto.getEstoqueMinimo();
-            // Só verifica produtos para os quais um estoque mínimo foi definido.
-            if (estoqueMinimo > 0) {
-                double quantidadeAtual = estoque.getQuantidadeDisponivel(produto.getCodigoDeBarras());
-                if (quantidadeAtual <= estoqueMinimo) {
-                    listModel.addElement("ESTOQUE: O produto '" + produto.getNomeDoProduto() + "' está com estoque baixo (" + quantidadeAtual + " / " + estoqueMinimo + " " + produto.getGrandeza().toString().toLowerCase() + ").");
-                }
+            double quantidadeAtual = estoque.getQuantidadeDisponivel(produto.getCodigoDeBarras());
+
+            // Verifica primeiro a condição mais crítica: estoque zerado.
+            if (quantidadeAtual == 0) {
+                listModel.addElement("ESTOQUE ZERADO: O produto '" + produto.getNomeDoProduto() + "' acabou.");
+            
+            // Se não estiver zerado, verifica se está abaixo do mínimo configurado.
+            } else if (estoqueMinimo > 0 && quantidadeAtual <= estoqueMinimo) {
+                listModel.addElement("ESTOQUE: O produto '" + produto.getNomeDoProduto() + "' está com estoque baixo (" + quantidadeAtual + " / " + estoqueMinimo + " " + produto.getGrandeza().toString().toLowerCase() + ").");
             }
         }
 
