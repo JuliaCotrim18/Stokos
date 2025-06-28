@@ -9,6 +9,7 @@ import stokos.model.CatalogoDeProdutos;
 import stokos.model.Estoque;
 import stokos.exception.LoteNaoVazioException;
 import stokos.exception.ProdutoNaoCadastradoException;
+import java.util.ArrayList;
 
 /**
  * Representa a tela de gerenciamento de produtos do catálogo.
@@ -26,6 +27,8 @@ public class TelaProdutos extends JFrame {
     private JButton botaoRemoverProduto;
     private JButton botaoConfirmarAlteracoes;
     private JButton botaoVoltar;
+    private JRadioButton radioBuscaCodigo; 
+    private JRadioButton radioBuscaNome;   
 
     // Atributo para manter a referência do produto atualmente carregado na tela.
     private Produto produtoEmExibicao;
@@ -63,15 +66,13 @@ public class TelaProdutos extends JFrame {
     }
 
     /**
-     * Cria o painel superior (Norte), que contém o botão para cadastrar
-     * um novo produto e a funcionalidade de pesquisa.
-     * @return O JPanel configurado.
+     * Cria o painel superior (Norte), com cadastro e pesquisa.
      */
     private JPanel criarPainelNorte() {
         JPanel painelNorte = new JPanel();
         painelNorte.setLayout(new BoxLayout(painelNorte, BoxLayout.Y_AXIS));
 
-        // Botão para navegar para a tela de cadastro.
+        // Botão para navegar para a tela de cadastro (sem alteração).
         botaoCadastrarNovoProduto = new JButton("Cadastrar Novo Produto no Catálogo");
         botaoCadastrarNovoProduto.setAlignmentX(Component.CENTER_ALIGNMENT);
         botaoCadastrarNovoProduto.addActionListener(e -> {
@@ -79,48 +80,129 @@ public class TelaProdutos extends JFrame {
             this.dispose();
         });
         painelNorte.add(botaoCadastrarNovoProduto);
-        painelNorte.add(Box.createRigidArea(new Dimension(0, 20)));
+        painelNorte.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Painel de pesquisa.
-        JPanel painelPesquisa = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        painelPesquisa.add(new JLabel("Pesquisar por Código:"));
+        //PAINEL DE PESQUISA 
+        JPanel painelPesquisa = new JPanel(new BorderLayout(5, 5));
+        painelPesquisa.setBorder(BorderFactory.createTitledBorder("Pesquisar Produto"));
+        
+        // Campo de texto e botão
+        JPanel painelInput = new JPanel(new FlowLayout(FlowLayout.CENTER));
         campoPesquisarProduto = new JTextField(25);
-        painelPesquisa.add(campoPesquisarProduto);
+        painelInput.add(campoPesquisarProduto);
         botaoPesquisarProduto = new JButton("Pesquisar");
+        painelInput.add(botaoPesquisarProduto);
 
-        // Lógica de busca do produto.
-        botaoPesquisarProduto.addActionListener(e -> {
-            String codigoParaBuscar = campoPesquisarProduto.getText().trim();
-            if (codigoParaBuscar.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, digite um código de barras para pesquisar.", "Aviso", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+        // Botões de Rádio para escolher o tipo de busca
+        JPanel painelOpcoesBusca = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        radioBuscaCodigo = new JRadioButton("Por Código", true); // Selecionado por padrão
+        radioBuscaNome = new JRadioButton("Por Nome");
+        ButtonGroup grupoBusca = new ButtonGroup();
+        grupoBusca.add(radioBuscaCodigo);
+        grupoBusca.add(radioBuscaNome);
+        painelOpcoesBusca.add(new JLabel("Buscar:"));
+        painelOpcoesBusca.add(radioBuscaCodigo);
+        painelOpcoesBusca.add(radioBuscaNome);
 
-            // Delega a busca para a classe de catálogo.
-            CatalogoDeProdutos catalogo = AppContext.getInstance().getDados().catalogo;
-            Produto produtoEncontrado = catalogo.buscarProduto(codigoParaBuscar);
+        painelPesquisa.add(painelOpcoesBusca, BorderLayout.NORTH);
+        painelPesquisa.add(painelInput, BorderLayout.CENTER);
 
-            // Preenche o formulário se o produto for encontrado, ou limpa e avisa o usuário.
-            if (produtoEncontrado != null) {
-                campoId.setText(String.valueOf(produtoEncontrado.getId()));
-                campoNome.setText(produtoEncontrado.getNomeDoProduto());
-                campoCodBarras.setText(produtoEncontrado.getCodigoDeBarras());
-                campoPreco.setText(String.valueOf(produtoEncontrado.getPrecoUnitario()));
-                campoCategoria.setText(produtoEncontrado.getCategoria());
-                this.produtoEmExibicao = produtoEncontrado; // Armazena a referência.
-            } else {
-                campoId.setText("");
-                campoNome.setText("");
-                campoCodBarras.setText("");
-                campoPreco.setText("");
-                campoCategoria.setText("");
-                this.produtoEmExibicao = null; // Limpa a referência.
-                JOptionPane.showMessageDialog(this, "Nenhum produto encontrado com o código: " + codigoParaBuscar, "Erro de Busca", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        painelPesquisa.add(botaoPesquisarProduto);
+        // --- LÓGICA DE BUSCA ATUALIZADA ---
+        botaoPesquisarProduto.addActionListener(e -> pesquisarProduto());
+
         painelNorte.add(painelPesquisa);
         return painelNorte;
+    }
+
+    /**
+     * Lógica de pesquisa centralizada.
+     */
+    private void pesquisarProduto() {
+        String termoBusca = campoPesquisarProduto.getText().trim();
+        if (termoBusca.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, digite um termo para pesquisar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        CatalogoDeProdutos catalogo = AppContext.getInstance().getDados().catalogo;
+
+        if (radioBuscaCodigo.isSelected()) {
+            // Busca por Código (lógica original)
+            Produto produtoEncontrado = catalogo.buscarProduto(termoBusca);
+            if (produtoEncontrado != null) {
+                exibirProduto(produtoEncontrado);
+            } else {
+                limparCampos();
+                JOptionPane.showMessageDialog(this, "Nenhum produto encontrado com o código: " + termoBusca, "Erro de Busca", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            // Busca por Nome (nova lógica)
+            ArrayList<Produto> produtosEncontrados = catalogo.buscarProdutosPorNome(termoBusca);
+
+            if (produtosEncontrados.isEmpty()) {
+                limparCampos();
+                JOptionPane.showMessageDialog(this, "Nenhum produto encontrado com o nome: " + termoBusca, "Erro de Busca", JOptionPane.ERROR_MESSAGE);
+            } else if (produtosEncontrados.size() == 1) {
+                // Se encontrou apenas um, exibe direto.
+                exibirProduto(produtosEncontrados.get(0));
+            } else {
+                // Se encontrou múltiplos, pede para o usuário escolher.
+                escolherProdutoDaLista(produtosEncontrados);
+            }
+        }
+    }
+
+    /**
+     * Exibe uma caixa de diálogo para o usuário escolher entre vários resultados.
+     */
+    private void escolherProdutoDaLista(ArrayList<Produto> produtos) {
+        String[] nomesProdutos = produtos.stream()
+                .map(p -> p.getId() + ": " + p.getNomeDoProduto())
+                .toArray(String[]::new);
+
+        String escolha = (String) JOptionPane.showInputDialog(
+                this,
+                "Múltiplos produtos encontrados. Selecione um:",
+                "Selecione um Produto",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                nomesProdutos,
+                nomesProdutos[0]
+        );
+
+        if (escolha != null) {
+            // Encontra o produto correspondente à escolha do usuário e o exibe.
+            for (Produto p : produtos) {
+                if (escolha.startsWith(p.getId() + ":")) {
+                    exibirProduto(p);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Método auxiliar para preencher os campos do formulário.
+     */
+    private void exibirProduto(Produto produto) {
+        produtoEmExibicao = produto;
+        campoId.setText(String.valueOf(produto.getId()));
+        campoNome.setText(produto.getNomeDoProduto());
+        campoCodBarras.setText(produto.getCodigoDeBarras());
+        campoPreco.setText(String.format("%.2f", produto.getPrecoUnitario()));
+        campoCategoria.setText(produto.getCategoria() != null ? produto.getCategoria() : "");
+    }
+    
+    /**
+     * Método auxiliar para limpar os campos.
+     */
+    private void limparCampos() {
+        produtoEmExibicao = null;
+        campoId.setText("");
+        campoNome.setText("");
+        campoCodBarras.setText("");
+        campoPreco.setText("");
+        campoCategoria.setText("");
     }
 
     /**

@@ -5,6 +5,7 @@ import stokos.exception.LoteNaoVazioException;
 import stokos.exception.ProdutoJaCadastradoException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Representa o catálogo central de todos os tipos de produtos que a loja pode comercializar.
@@ -150,6 +151,21 @@ public class CatalogoDeProdutos implements Serializable {
             }
         }
         return null;
+    }
+
+    /**
+     * Busca e retorna uma lista de produtos cujo nome contém o termo de busca.
+     * A busca é case-insensitive (ignora maiúsculas/minúsculas).
+     *
+     * @param termoBusca O nome ou parte do nome a ser procurado.
+     * @return Uma lista de objetos `Produto` que correspondem ao critério.
+     * Retorna uma lista vazia se nenhum produto for encontrado.
+     */
+    public ArrayList<Produto> buscarProdutosPorNome(String termoBusca) {
+        // Usa a API de Streams do Java para uma busca mais limpa e funcional.
+        return listaDeProdutos.stream()
+                .filter(produto -> produto.getNomeDoProduto().toLowerCase().contains(termoBusca.toLowerCase()))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

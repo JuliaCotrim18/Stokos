@@ -1,7 +1,7 @@
 package stokos;
 
 import stokos.service.*;
-import stokos.persistence.*;
+import stokos.gui.persistence.*;
 import stokos.model.*;
 
 /**
