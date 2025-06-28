@@ -91,7 +91,7 @@ public class TelaEstoque extends JFrame {
 
         // Instancia os botões de ação.
         botaoAdicionarLote = new JButton("Adicionar Novo Lote");
-        botaoRegistrarSaida = new JButton("Registrar Saída de Produto (Venda)"); 
+        botaoRegistrarSaida = new JButton("Registrar Saída de Produto"); 
         JButton botaoRegistrarDescarte = new JButton("Registrar Descarte de Produto"); 
         botaoVisualizarEstoque = new JButton("Visualizar Lotes no Estoque");
 
