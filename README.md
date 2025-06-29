@@ -72,7 +72,7 @@ O projeto foi cuidadosamente desenhado para ser um estudo de caso da aplicação
 ### Diagrama de Classes (UML)
 O diagrama a seguir ilustra as principais classes do sistema, seus atributos, métodos e os relacionamentos entre elas (herança, agregação e composição).
 
-![Diagrama de Classes do Stokos](docs/imagem/Diagrama Stokos.drawio.png)
+![Diagrama de Classes do Stokos](docs/imagem/Diagrama.png)
 
 ### **Pilares da POO no Projeto**
 
