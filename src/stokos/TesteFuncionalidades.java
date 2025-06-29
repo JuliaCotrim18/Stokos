@@ -284,10 +284,10 @@ public class TesteFuncionalidades {
         ServicoDeExportacao servico = new ServicoDeExportacao();
         
         // 1. Criar um modelo de tabela com dados de teste
-        String[] colunas = {"Produto", "Preco"};
+        String[] colunas = {"Produto", "Preço"};
         DefaultTableModel model = new DefaultTableModel(colunas, 0);
-        model.addRow(new Object[]{"Produto A", "10.0"});
-        model.addRow(new Object[]{"Produto B", "20.5"});
+        model.addRow(new Object[]{"Feijão", "10.0"});
+        model.addRow(new Object[]{"Arroz", "20.5"});
 
         try {
             // 2. Exportar
@@ -299,7 +299,7 @@ public class TesteFuncionalidades {
                 String row1 = reader.readLine();
                 String row2 = reader.readLine();
 
-                if ("Produto;Preco".equals(header) && "Produto A;10.0".equals(row1) && "Produto B;20.5".equals(row2)) {
+                if ("Produto;Preco".equals(header) && "Feijão;10.0".equals(row1) && "Arroz;20.5".equals(row2)) {
                     System.out.println("SUCESSO: Arquivo CSV gerado e verificado com sucesso.");
                 } else {
                     System.err.println("FALHA: O conteúdo do arquivo CSV está incorreto.");

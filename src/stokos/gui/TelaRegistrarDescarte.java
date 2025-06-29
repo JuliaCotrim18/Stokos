@@ -17,6 +17,17 @@ import stokos.AppContext;
 import stokos.model.Estoque;
 import stokos.exception.*;
 
+/**
+ * Representa a tela de registro de descarte de produtos.
+ * Esta tela permite que o usuário registre o descarte de produtos do estoque,
+ * informando o código de barras, quantidade e motivo (opcional).
+ * 
+ * CONCEITO DE DESIGN: SEPARAÇÃO DA CONSTRUÇÃO DA UI
+ * A classe é organizada em métodos privados, cada um responsável por criar uma
+ * parte específica da interface (ex: `criarPainelNorte`, `criarPainelFormulario`).
+ * Essa abordagem torna o código mais limpo, legível e fácil de manter.
+ */
+
 public class TelaRegistrarDescarte extends JFrame {
 
     private JButton botaoVoltar;
@@ -25,12 +36,22 @@ public class TelaRegistrarDescarte extends JFrame {
     private JTextField campoMotivo;
     private JButton botaoRegistrarDescarte;
 
+    
+    /**
+     * Construtor da tela de registro de descarte.
+     * Orquestra a configuração da janela e o carregamento dos componentes.
+     */
     public TelaRegistrarDescarte() {
         super("Registrar Descarte de Produto");
         configurarJanela();
         inicializarComponentes();
     }
 
+
+    /**
+     * Configura as propriedades essenciais da janela (JFrame).
+     * Define tamanho, comportamento de fechamento e layout.
+     */
     private void configurarJanela() {
         this.setSize(800,600);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -38,12 +59,21 @@ public class TelaRegistrarDescarte extends JFrame {
         this.setLayout(new BorderLayout(10, 10));
     }
 
+
+    /**
+     * Inicializa e organiza os painéis principais dentro da janela.
+     * Adiciona o painel norte, o formulário de descarte e o painel sul com o botão de registro.
+     */
     private void inicializarComponentes() {
         this.add(criarPainelNorte(), BorderLayout.NORTH);
         this.add(criarPainelFormulario(), BorderLayout.CENTER);
         this.add(criarPainelSul(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Cria o painel superior (Norte) com o botão de navegação "Voltar".
+     * @return O JPanel configurado.
+     */
     private JPanel criarPainelNorte() {
         JPanel painelNorte = new JPanel(new FlowLayout(FlowLayout.LEFT));
         botaoVoltar = new JButton("Voltar");
@@ -55,6 +85,11 @@ public class TelaRegistrarDescarte extends JFrame {
         return painelNorte;
     }
 
+    /**
+     * Cria o painel central que contém o formulário de registro de descarte.
+     * Este painel inclui campos para código de barras, quantidade e motivo do descarte.
+     * @return Um JScrollPane contendo o painel do formulário.
+     */
     private JScrollPane criarPainelFormulario() {
         JPanel painelFormulario = new JPanel(new GridBagLayout());
         painelFormulario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -87,6 +122,12 @@ public class TelaRegistrarDescarte extends JFrame {
         return scrollPane;
     }
 
+
+    /**
+     * Cria o painel inferior (Sul) com o botão de ação "Registrar Descarte".
+     * Este painel contém a lógica para registrar o descarte de produtos.
+     * @return O JPanel configurado.
+     */
     private JPanel criarPainelSul() {
         JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.CENTER));
         botaoRegistrarDescarte = new JButton("Registrar Descarte");
