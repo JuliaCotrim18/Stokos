@@ -21,7 +21,7 @@ O sistema permite que pequenas empresas gerenciem seu catálogo de produtos, con
 
 Uma demonstração em vídeo do sistema em funcionamento está disponível no link abaixo:
 
-- [Demonstração do Stokos no YouTube](#) <!-- Substitua pelo link real -->
+- [https://youtu.be/EQ_4Zayl6uA](#) <!-- Substitua pelo link real -->
 
 ---
 
